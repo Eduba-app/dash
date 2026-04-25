@@ -8,12 +8,12 @@ import timer from "../../../public/icons/timer.svg";
 import { booksService } from "@/services/books.services";
 import { Book } from "@/types/book";
 
-// ─── Book Row 
+// ─── Book Row
 function BookRow({ book }: { book: Book }) {
   return (
-    <div className="grid grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] last:border-0 hover:bg-[#FAFAFA] transition-colors">
+    <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] last:border-0 hover:bg-[#FAFAFA] transition-colors">
       {/* Name + cover */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <div className="w-12 h-14 rounded-xl overflow-hidden bg-[#F4F4F7] shrink-0">
           {book.coverImageUrl ? (
             <Image
@@ -35,8 +35,8 @@ function BookRow({ book }: { book: Book }) {
         </div>
       </div>
 
-      {/* Category */}
-      <span className="text-[#19213D] text-sm">{book.category?.name ?? "—"}</span>
+      {/* Category — hidden on mobile */}
+      <span className="hidden sm:block text-[#19213D] text-sm">{book.category?.name ?? "—"}</span>
 
       {/* Price */}
       <span className="text-[#19213D] text-sm font-medium">
@@ -49,7 +49,7 @@ function BookRow({ book }: { book: Book }) {
 // ─── Skeleton
 function BookSkeleton() {
   return (
-    <div className="grid grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] animate-pulse">
+    <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] animate-pulse">
       <div className="flex items-center gap-3">
         <div className="w-12 h-14 bg-[#EBEFF6] rounded-xl shrink-0" />
         <div className="space-y-2 flex-1">
@@ -57,13 +57,13 @@ function BookSkeleton() {
           <div className="h-3 bg-[#EBEFF6] rounded-lg w-52" />
         </div>
       </div>
-      <div className="h-4 bg-[#EBEFF6] rounded-lg w-16" />
+      <div className="hidden sm:block h-4 bg-[#EBEFF6] rounded-lg w-16" />
       <div className="h-4 bg-[#EBEFF6] rounded-lg w-10" />
     </div>
   );
 }
 
-// ─── Main Page 
+// ─── Main Page
 export default function DashboardPage() {
   const { data: booksResponse, isLoading } = useQuery({
     queryKey: ["books", 1, ""],
@@ -73,11 +73,11 @@ export default function DashboardPage() {
   const books: Book[] = booksResponse?.data?.data ?? [];
 
   return (
-    <div className="p-6 space-y-5">
-      <h1 className="text-[#19213D] text-[32px] font-semibold">Dashboard</h1>
+    <div className="p-4 sm:p-6 space-y-5 pb-0">
+      <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold">Dashboard</h1>
 
       {/* ── Overview ── */}
-      <div className="bg-white rounded-2xl p-6">
+      <div className="bg-white rounded-2xl p-4 sm:p-6">
         <h2 className="text-[#19213D] text-base font-medium mb-4">Overview</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 bg-[#F6F8FC] rounded-[32px] border-[1.5px] border-[#EBEFF6] p-2">
@@ -87,7 +87,7 @@ export default function DashboardPage() {
               <Image src={users} width={24} height={24} alt="users icon" />
               <span>Users</span>
             </div>
-            <p className="text-[#19213D] text-[60px] font-semibold">1,293</p>
+            <p className="text-[#19213D] text-[40px] sm:text-[60px] font-semibold">1,293</p>
           </div>
 
           {/* Revenue */}
@@ -97,7 +97,7 @@ export default function DashboardPage() {
               <span>Revenue</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <p className="text-[#19213D] text-[60px] font-medium">265K</p>
+              <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">265K</p>
               <span className="text-[#5D6481] text-sm">last 30 days</span>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <span>Study time in hours</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <p className="text-[#19213D] text-[60px] font-medium">360</p>
+              <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">360</p>
               <span className="text-[#5D6481] text-sm">last 30 days</span>
             </div>
           </div>
@@ -125,9 +125,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Table Header */}
-        <div className="grid grid-cols-[2fr_1fr_auto] px-4 py-3 border-y border-[#F6F8FC]">
+        <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_1fr_auto] px-4 py-3 border-y border-[#F6F8FC]">
           <span className="text-[#5D6481] text-sm">Name</span>
-          <span className="text-[#5D6481] text-sm">Category</span>
+          <span className="hidden sm:block text-[#5D6481] text-sm">Category</span>
           <span className="text-[#5D6481] text-sm">Price</span>
         </div>
 

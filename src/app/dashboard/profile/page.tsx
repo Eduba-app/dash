@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { profileService } from "@/services/profile.services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import pencilEdit from "../../../../public/icons/penEdit.svg"
@@ -77,16 +76,16 @@ export default function ProfilePage() {
   };
 
   if (isLoading || !profile) {
-    return <div className="p-6">Loading profile...</div>;
+    return <div className="p-4 sm:p-6">Loading profile...</div>;
   }
 
   return (
-    <div className="p-6 max-w-[1,038px] mx-auto">
-      <h1 className="text-[#19213D] text-[32px] font-semibold mb-8">Profile</h1>
+    <div className="p-4 sm:p-6 max-w-259.5 mx-auto">
+      <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold mb-6 sm:mb-8">Profile</h1>
 
       {/* Profile Information Card */}
       <div className="bg-white rounded-[32px] shadow-sm border-1.5 border-[#EBEFF6] p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <h2 className="text-[#19213D] text-[18px] font-medium">
             {isEditingProfile ? "Edit Profile information" : "Profile information"}
           </h2>
@@ -105,14 +104,14 @@ export default function ProfilePage() {
               <Button
                 variant="outline"
                 onClick={() => setIsEditingProfile(false)}
-                className="bg-[#EBEFF6] text-[#9D4A2F] px-6 py-4"
+                className="bg-[#EBEFF6] text-[#9D4A2F] px-4 sm:px-6"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSaveProfile}
                 disabled={updateMutation.isPending}
-                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-6 py-4"
+                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
                 {updateMutation.isPending ? "Saving..." : "Save"}
               </Button>
@@ -145,7 +144,7 @@ export default function ProfilePage() {
 
       {/* Support Information Card */}
       <div className="bg-white rounded-3xl shadow-sm border border-[#F4F4F7] p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <h2 className="text-[#19213D] text-[18px] font-medium">Support Information</h2>
 
           {!isEditingSupport ? (
@@ -163,14 +162,14 @@ export default function ProfilePage() {
               <Button
                 variant="outline"
                 onClick={() => setIsEditingSupport(false)}
-                className="bg-[#EBEFF6] text-[#9D4A2F] px-6 py-4"
+                className="bg-[#EBEFF6] text-[#9D4A2F] px-4 sm:px-6"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSaveSupport}
                 disabled={updateMutation.isPending}
-                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-6 py-4"
+                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
                 {updateMutation.isPending ? "Saving..." : "Save"}
               </Button>

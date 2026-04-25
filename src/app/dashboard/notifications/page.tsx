@@ -4,8 +4,8 @@ import { Send } from "lucide-react";
 
 export default function NotificationsPage() {
   return (
-    <div className="p-6">
-      <h1 className="text-[#1C1C2E] text-2xl font-bold mb-6">Notification</h1>
+    <div className="p-4 sm:p-6 pb-0">
+      <h1 className="text-[#1C1C2E] text-2xl sm:text-[32px] font-bold mb-6">Notification</h1>
 
       <div className="bg-white rounded-2xl p-6">
         {/* Header */}
@@ -48,7 +48,7 @@ export default function NotificationsPage() {
         <div className="flex justify-end mt-5">
           <button
             disabled
-            className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#A0522D] text-white text-sm font-semibold opacity-40 cursor-not-allowed"
+            className="flex items-center justify-center gap-2 h-11 w-full sm:w-auto px-6 rounded-xl bg-[#A0522D] text-white text-sm font-semibold opacity-40 cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
             Send Notification

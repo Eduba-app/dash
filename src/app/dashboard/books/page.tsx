@@ -15,7 +15,7 @@ import trash from "../../../../public/icons/trash.svg";
 
 const ITEMS_PER_PAGE = 10;
 
-// ─── Import Status Badge 
+// ─── Import Status Badge
 function ImportBadge({ status }: { status: ImportStatus }) {
   const styles: Record<ImportStatus, string> = {
     PENDING: "bg-yellow-100 text-yellow-700",
@@ -30,7 +30,7 @@ function ImportBadge({ status }: { status: ImportStatus }) {
   );
 }
 
-// ─── Delete Dialog 
+// ─── Delete Dialog
 function DeleteDialog({ book, onClose }: { book: Book; onClose: () => void }) {
   const queryClient = useQueryClient();
 
@@ -75,7 +75,7 @@ function DeleteDialog({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-// ─── Empty State 
+// ─── Empty State
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-32">
@@ -95,7 +95,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-// ─── Search Not Found 
+// ─── Search Not Found
 function SearchNotFound({ query }: { query: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-4">
@@ -109,12 +109,12 @@ function SearchNotFound({ query }: { query: string }) {
   );
 }
 
-// ─── Skeleton 
+// ─── Skeleton
 function SkeletonRows() {
   return (
     <>
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="grid grid-cols-[2fr_1fr_1fr_1fr_90px] items-center px-6 py-4 border-b border-[#F4F4F7] animate-pulse">
+        <div key={i} className="grid grid-cols-[1fr_90px] sm:grid-cols-[2fr_1fr_90px] lg:grid-cols-[2fr_1fr_1fr_1fr_90px] items-center px-6 py-4 border-b border-[#F4F4F7] animate-pulse">
           <div className="flex items-center gap-3">
             <div className="w-12 h-14 bg-[#F4F4F7] rounded-xl shrink-0" />
             <div className="space-y-2">
@@ -122,7 +122,9 @@ function SkeletonRows() {
               <div className="h-3 bg-[#F4F4F7] rounded w-48" />
             </div>
           </div>
-          {[1, 2, 3].map(j => <div key={j} className="h-4 bg-[#F4F4F7] rounded w-16" />)}
+          <div className="hidden sm:block h-4 bg-[#F4F4F7] rounded w-16" />
+          <div className="hidden lg:block h-4 bg-[#F4F4F7] rounded w-16" />
+          <div className="hidden lg:block h-4 bg-[#F4F4F7] rounded w-16" />
           <div className="flex gap-2 justify-end">
             <div className="w-9 h-9 bg-[#F4F4F7] rounded-xl" />
             <div className="w-9 h-9 bg-[#F4F4F7] rounded-xl" />
@@ -133,7 +135,7 @@ function SkeletonRows() {
   );
 }
 
-// ─── Main Page 
+// ─── Main Page
 export default function BooksPage() {
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -146,7 +148,6 @@ export default function BooksPage() {
     queryFn: () => booksService.getAll({ page, limit: ITEMS_PER_PAGE, q: search || undefined }),
   });
 
-  // Extract from: { status, data: { data: Book[], meta: {...} } }
   const books: Book[] = response?.data?.data ?? [];
   const totalPages = response?.data?.meta?.pagesCount ?? 1;
 
@@ -154,12 +155,22 @@ export default function BooksPage() {
   const noResults = !isLoading && books.length === 0 && !!search;
 
   return (
-    <div className="p-6 flex flex-col min-h-full">
+    <div className="p-4 sm:p-6 flex flex-col min-h-full">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <h1 className="text-[#19213D] text-[32px] font-semibold shrink-0">Books</h1>
+      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:gap-4">
+        {/* Title + mobile add button */}
+        <div className="flex items-center justify-between sm:contents">
+          <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold">Books</h1>
+          <Button
+            onClick={() => router.push("/dashboard/books/add")}
+            className="sm:hidden w-10 h-10 bg-[#A0522D] text-white rounded-[12px] hover:bg-[#8B4513] transition-colors flex items-center justify-center p-0"
+          >
+            <Plus className="w-4 h-4" />
+          </Button>
+        </div>
 
-        <div className="relative flex-1 max-w-md">
+        {/* Search */}
+        <div className="relative flex-1 sm:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
           <input
             value={searchInput}
@@ -169,9 +180,10 @@ export default function BooksPage() {
           />
         </div>
 
+        {/* Desktop add button */}
         <Button
           onClick={() => router.push("/dashboard/books/add")}
-          className="ml-auto flex items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
+          className="hidden sm:flex ml-auto items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
         >
           <Plus className="w-4 h-4" />
           Add New Book
@@ -191,11 +203,11 @@ export default function BooksPage() {
         <>
           <div className="bg-white rounded-2xl overflow-hidden">
             {/* Table Header */}
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_90px] px-6 py-4 border-b border-[#F4F4F7]">
+            <div className="grid grid-cols-[1fr_90px] sm:grid-cols-[2fr_1fr_90px] lg:grid-cols-[2fr_1fr_1fr_1fr_90px] px-6 py-4 border-b border-[#F4F4F7]">
               <span className="text-[#6B7280] text-sm">Name</span>
-              <span className="text-[#6B7280] text-sm">Category</span>
-              <span className="text-[#6B7280] text-sm">Price</span>
-              <span className="text-[#6B7280] text-sm">Decks</span>
+              <span className="hidden sm:block text-[#6B7280] text-sm">Category</span>
+              <span className="hidden lg:block text-[#6B7280] text-sm">Price</span>
+              <span className="hidden lg:block text-[#6B7280] text-sm">Decks</span>
               <span />
             </div>
 
@@ -204,10 +216,10 @@ export default function BooksPage() {
               books.map((book: Book) => (
                 <div
                   key={book.id}
-                  className="grid grid-cols-[2fr_1fr_1fr_1fr_90px] items-center px-6 py-4 border-b border-[#F4F4F7] last:border-0 hover:bg-[#FAFAFA] transition-colors"
+                  className="grid grid-cols-[1fr_90px] sm:grid-cols-[2fr_1fr_90px] lg:grid-cols-[2fr_1fr_1fr_1fr_90px] items-center px-6 py-4 border-b border-[#F4F4F7] last:border-0 hover:bg-[#FAFAFA] transition-colors"
                 >
                   {/* Cover + info */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-14 rounded-xl overflow-hidden bg-[#F4F4F7] shrink-0">
                       {book.coverImageUrl ? (
                         <Image
@@ -230,9 +242,12 @@ export default function BooksPage() {
                     </div>
                   </div>
 
-                  <span className="text-[#1C1C2E] text-sm">{book.category?.name ?? "—"}</span>
-                  <span className="text-[#1C1C2E] text-sm">${(book.priceCents / 100).toFixed(0)}</span>
-                  <span className="text-[#1C1C2E] text-sm">{book.deckCount ?? "—"}</span>
+                  {/* Category — hidden on mobile */}
+                  <span className="hidden sm:block text-[#1C1C2E] text-sm">{book.category?.name ?? "—"}</span>
+                  {/* Price — hidden below lg */}
+                  <span className="hidden lg:block text-[#1C1C2E] text-sm">${(book.priceCents / 100).toFixed(0)}</span>
+                  {/* Decks — hidden below lg */}
+                  <span className="hidden lg:block text-[#1C1C2E] text-sm">{book.deckCount ?? "—"}</span>
 
                   {/* Actions */}
                   <div className="flex items-center gap-2 justify-end">
@@ -240,14 +255,14 @@ export default function BooksPage() {
                       onClick={() => setDeleteTarget(book)}
                       className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
                     >
-                      <Image src={trash} width={24} height={24} alt="trash"/>
+                      <Image src={trash} width={24} height={24} alt="trash" />
                     </Button>
                     <button
                       disabled
                       title="Coming soon"
                       className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] opacity-40 cursor-not-allowed"
                     >
-                      <Image src={pencil} width={16} height={16} alt="pencil"/>
+                      <Image src={pencil} width={16} height={16} alt="pencil" />
                     </button>
                   </div>
                 </div>

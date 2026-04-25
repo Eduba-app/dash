@@ -19,7 +19,7 @@ import frame from "../../../../public/images/Frame 16.png";
 const toSlug = (str: string) =>
   str.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-// ─── Schema 
+// ─── Schema
 const categorySchema = z.object({
   name: z.string().min(1, "Category name is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -27,7 +27,7 @@ const categorySchema = z.object({
 });
 type CategoryForm = z.infer<typeof categorySchema>;
 
-// ─── Delete Dialog 
+// ─── Delete Dialog
 function DeleteDialog({
   category,
   onClose,
@@ -50,7 +50,6 @@ function DeleteDialog({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl w-full max-w-sm p-6 shadow-xl text-center">
-        {/* Icon */}
         <div className="w-14 h-14 bg-[#F4F4F7] rounded-full flex items-center justify-center mx-auto mb-4">
           <Trash2 className="w-6 h-6 text-[#A0522D]" />
         </div>
@@ -84,7 +83,7 @@ function DeleteDialog({
   );
 }
 
-// ─── Add Dialog 
+// ─── Add Dialog
 function AddCategoryDialog({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient();
   const [displayOrderValue, setDisplayOrderValue] = useState(0);
@@ -186,7 +185,7 @@ function AddCategoryDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── Empty State 
+// ─── Empty State
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-32">
@@ -208,7 +207,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-// ─── Main Page 
+// ─── Main Page
 export default function CategoriesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -233,32 +232,44 @@ export default function CategoriesPage() {
   const isEmpty = !isLoading && !isError && categoriesList.length === 0;
 
   return (
-    <div className="p-6 flex flex-col min-h-full">
+    <div className="p-4 sm:p-6 flex flex-col min-h-full">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <h1 className="text-[#19213D] text-[32px] font-semibold">Categories</h1>
-        <div className="relative flex-1 max-w-md">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-            <input
-              type="text"
-              placeholder="Search a Categories"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full h-10 pl-9 pr-4 rounded-full border border-[#E5E7EB] bg-white text-[#1C1C2E] text-sm outline-none focus:border-[#A0522D] focus:ring-2 focus:ring-[#A0522D]/10 transition-all"
-            />
-          </div>
-        </div>
-        {!isEmpty && !isLoading && (
+      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:gap-4">
+        {/* Title + mobile add button */}
+        <div className="flex items-center justify-between sm:contents">
+          <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold">Categories</h1>
+          {!isEmpty && !isLoading && (
             <Button
               onClick={() => setShowAdd(true)}
-              className="ml-auto flex items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
+              className="sm:hidden w-10 h-10 bg-[#A0522D] text-white rounded-[12px] hover:bg-[#8B4513] transition-colors flex items-center justify-center p-0"
             >
               <Plus className="w-4 h-4" />
-              Add New Category
             </Button>
           )}
+        </div>
+
+        {/* Search */}
+        <div className="relative flex-1 sm:max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input
+            type="text"
+            placeholder="Search a Categories"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            className="w-full h-10 pl-9 pr-4 rounded-full border border-[#E5E7EB] bg-white text-[#1C1C2E] text-sm outline-none focus:border-[#A0522D] focus:ring-2 focus:ring-[#A0522D]/10 transition-all"
+          />
+        </div>
+
+        {/* Desktop add button */}
+        {!isEmpty && !isLoading && (
+          <Button
+            onClick={() => setShowAdd(true)}
+            className="hidden sm:flex ml-auto items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Category
+          </Button>
+        )}
       </div>
 
       {/* States */}
@@ -272,9 +283,9 @@ export default function CategoriesPage() {
         <>
           <div className="bg-white rounded-2xl overflow-hidden">
             {/* Table Header */}
-            <div className="grid grid-cols-[1fr_150px_90px] px-6 py-4 border-b border-[#F4F4F7]">
+            <div className="grid grid-cols-[1fr_90px] sm:grid-cols-[1fr_150px_90px] px-6 py-4 border-b border-[#F4F4F7]">
               <span className="text-[#6B7280] text-sm">Category</span>
-              <span className="text-[#6B7280] text-sm">Book count</span>
+              <span className="hidden sm:block text-[#6B7280] text-sm">Book count</span>
               <span />
             </div>
 
@@ -290,10 +301,10 @@ export default function CategoriesPage() {
               : categoriesList.map((cat: Category) => (
                 <div
                   key={cat.id}
-                  className="grid grid-cols-[1fr_150px_90px] items-center px-6 py-4 border-b border-[#F4F4F7] last:border-0 hover:bg-[#FAFAFA] transition-colors"
+                  className="grid grid-cols-[1fr_90px] sm:grid-cols-[1fr_150px_90px] items-center px-6 py-4 border-b border-[#F4F4F7] last:border-0 hover:bg-[#FAFAFA] transition-colors"
                 >
                   {/* Name + image */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
                       {cat.imageUrl && cat.imageUrl !== "test" ? (
                         <Image
@@ -313,33 +324,32 @@ export default function CategoriesPage() {
                         />
                       )}
                     </div>
-                    <div>
-                      <p className="text-[#1C1C2E] text-sm font-medium capitalize">
+                    <div className="min-w-0">
+                      <p className="text-[#1C1C2E] text-sm font-medium capitalize truncate">
                         {cat.name}
                       </p>
-                      <p className="text-[#9CA3AF] text-xs">{cat.slug}</p>
+                      <p className="text-[#9CA3AF] text-xs truncate">{cat.slug}</p>
                     </div>
                   </div>
 
-                  <span className="text-[#1C1C2E] text-sm">0</span>
+                  {/* Book count — hidden on mobile */}
+                  <span className="hidden sm:block text-[#1C1C2E] text-sm">0</span>
 
                   {/* Actions */}
                   <div className="flex items-center gap-2 justify-end">
                     <Button
-                      onClick={() => setDeleteTarget(cat)} 
+                      onClick={() => setDeleteTarget(cat)}
                       className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
                       title="Delete category"
                     >
-                      {/* <Trash2 className="w-4 h-4" /> */}
-                      <Image src={trash} width={24} height={24} alt="trash"/>
+                      <Image src={trash} width={24} height={24} alt="trash" />
                     </Button>
                     <Button
                       disabled
                       title="Coming soon"
                       className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] opacity-40 cursor-not-allowed"
                     >
-                      {/* <Pencil className="w-4 h-4" /> */}
-                      <Image src={pencil} width={16} height={16} alt="pencil"/>
+                      <Image src={pencil} width={16} height={16} alt="pencil" />
                     </Button>
                   </div>
                 </div>
@@ -373,10 +383,8 @@ export default function CategoriesPage() {
         </>
       )}
 
-      {/* Dialogs */}
       {showAdd && <AddCategoryDialog onClose={() => setShowAdd(false)} />}
 
-      {/* Delete Dialog */}
       {deleteTarget && (
         <DeleteDialog
           category={deleteTarget}

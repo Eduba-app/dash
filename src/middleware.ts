@@ -3,20 +3,27 @@ import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-  const isAuthPage = req.nextUrl.pathname.startsWith("/login");
-  const isDashboard = req.nextUrl.pathname.startsWith("/dashboard");
+  const { pathname } = req.nextUrl;
+
+  const isAuthPage  = pathname.startsWith("/login");
+  const isDashboard = pathname.startsWith("/dashboard");
 
   if (isDashboard && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    const loginUrl = new URL("/login", req.nextUrl.origin);
+    return NextResponse.redirect(loginUrl);
   }
 
   if (isAuthPage && isLoggedIn) {
-    return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    const dashboardUrl = new URL("/dashboard", req.nextUrl.origin);
+    return NextResponse.redirect(dashboardUrl);
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: [
+    "/dashboard/:path*",
+    "/login",
+  ],
 };

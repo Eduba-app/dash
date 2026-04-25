@@ -6,7 +6,7 @@ import { booksService } from "@/services/books.services";
 import { categoriesService } from "@/services/categories.services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ChevronDown, ChevronUp, DollarSign, X } from "lucide-react";
+import { ChevronDown,  DollarSign, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
