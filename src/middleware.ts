@@ -27,3 +27,5 @@ export const config = {
     "/login",
   ],
 };
+
+export const runtime = "nodejs"; 
