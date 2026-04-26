@@ -3,31 +3,31 @@
 import Link from "next/link";
 import logo from "../../../public/images/logo.svg";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
-import barchart from "../../../public/icons/chart.svg";
-import barchartActive from "../../../public/icons/chartActive.svg";
-import layoutgrid from "../../../public/icons/category-2.svg";
+import { useAuth } from "@/context/AuthContext";
+import barchart         from "../../../public/icons/chart.svg";
+import barchartActive   from "../../../public/icons/chartActive.svg";
+import layoutgrid       from "../../../public/icons/category-2.svg";
 import layoutgridActive from "../../../public/icons/categoryActive-2.svg";
-import books from "../../../public/icons/book.svg";
-import booksActive from "../../../public/icons/bookActive.svg";
-import users from "../../../public/icons/user.svg";
-import usersActive from "../../../public/icons/userActive.svg";
-import bookmarked from "../../../public/icons/clipboard.svg";
+import books            from "../../../public/icons/book.svg";
+import booksActive      from "../../../public/icons/bookActive.svg";
+import users            from "../../../public/icons/user.svg";
+import usersActive      from "../../../public/icons/userActive.svg";
+import bookmarked       from "../../../public/icons/clipboard.svg";
 import bookmarkedActive from "../../../public/icons/clipboardActive.svg";
-import bell from "../../../public/icons/notification.svg";
-import bellActive from "../../../public/icons/notificationActive.svg";
+import bell             from "../../../public/icons/notification.svg";
+import bellActive       from "../../../public/icons/notificationActive.svg";
 import { LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: barchart, iconActive: barchartActive },
-  { href: "/dashboard/categories", label: "Categories", icon: layoutgrid, iconActive: layoutgridActive },
-  { href: "/dashboard/books", label: "Books", icon: books, iconActive: booksActive },
-  { href: "/dashboard/users", label: "Users", icon: users, iconActive: usersActive },
-  { href: "/dashboard/book-sets", label: "Book sets", icon: bookmarked, iconActive: bookmarkedActive },
-  { href: "/dashboard/notifications", label: "Notification", icon: bell, iconActive: bellActive },
+  { href: "/dashboard",               label: "Dashboard",    icon: barchart,   iconActive: barchartActive   },
+  { href: "/dashboard/categories",    label: "Categories",   icon: layoutgrid, iconActive: layoutgridActive },
+  { href: "/dashboard/books",         label: "Books",        icon: books,      iconActive: booksActive      },
+  { href: "/dashboard/users",         label: "Users",        icon: users,      iconActive: usersActive      },
+  { href: "/dashboard/book-sets",     label: "Book sets",    icon: bookmarked, iconActive: bookmarkedActive },
+  { href: "/dashboard/notifications", label: "Notification", icon: bell,       iconActive: bellActive       },
 ];
 
 interface SidebarProps {
@@ -37,29 +37,22 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const router = useRouter();
+  const router   = useRouter();
+  const { user, logout } = useAuth();
 
-  const initials = session?.user?.name
-    ? session.user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+  const initials    = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "AA";
+  const displayName = user?.name ?? "Admin User";
 
-  const displayName = session?.user?.name ?? "Admin User";
-   const handleLogout = async () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // ← منع الـ click يوصل للـ parent div
     onClose();
-    await signOut({ redirect: false });   
-    router.push("/login");                
-    router.refresh();                     
+    await logout();
   };
 
   return (
     <>
-      {/* Mobile backdrop */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40 lg:hidden"
@@ -67,13 +60,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
 
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white flex flex-col py-7 pb-3 px-2 shadow-sm transition-transform duration-300",
-          "lg:relative lg:inset-auto lg:z-auto lg:w-62.5 lg:min-h-[calc(100vh-2rem)] lg:rounded-[32px] lg:translate-x-0 lg:transition-none",
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 bg-white flex flex-col py-7 pb-3 px-2 shadow-sm transition-transform duration-300",
+        "lg:relative lg:inset-auto lg:z-auto lg:w-62.5 lg:min-h-[calc(100vh-2rem)] lg:rounded-[32px] lg:translate-x-0 lg:transition-none",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+
         {/* Close button — mobile only */}
         <button
           type="button"
@@ -87,7 +79,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Logo */}
         <div className="flex items-center gap-2 px-2 mb-10">
           <div className="w-9 h-9 rounded-2xl flex items-center justify-center">
-            <Image src={logo} width={60} height={60} alt="logo of admin dashboard" />
+            <Image src={logo} width={60} height={60} alt="logo" />
           </div>
           <span className="text-[#5D6481] font-semibold text-[14px] tracking-widest">
             EDUBA
@@ -97,12 +89,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Nav */}
         <nav className="flex flex-col gap-1 flex-1">
           {navItems.map(({ href, label, icon, iconActive }) => {
-            const isActive =
-              href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(href);
-
-            const IconSrc = isActive ? iconActive : icon;
+            const isActive = href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname.startsWith(href);
 
             return (
               <Link
@@ -112,18 +101,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 p-3 rounded-[12px] text-[16px] font-normal transition-all",
                   isActive
-                    ? "bg-[#9D4A2F] text-[#FFFFFF] font-medium"
+                    ? "bg-[#9D4A2F] text-white font-medium"
                     : "text-[#5D6481] hover:bg-[#F4F4F7] hover:text-[#1C1C2E]"
                 )}
               >
-                <Image src={IconSrc} alt={label} width={20} height={20} className="w-5 h-5 shrink-0" />
+                <Image
+                  src={isActive ? iconActive : icon}
+                  alt={label}
+                  width={20}
+                  height={20}
+                  className="w-5 h-5 shrink-0"
+                />
                 {label}
               </Link>
             );
           })}
         </nav>
 
-        {/* User */}
+        {/* User — نفس التصميم الأصلي بالظبط */}
         <div className="mt-6">
           <div
             className={cn(
@@ -141,17 +136,19 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <span className="text-[#5D6481] text-sm font-medium flex-1 truncate">
               {displayName}
             </span>
+            {/* Logout button جوّا الـ user card — نفس التصميم */}
             <Button
               type="button"
               variant="ghost"
-              onClick={handleLogout}
-              className="text-[#9CA3AF] hover:text-[#9D4A2F] transition-colors"
+              onClick={handleLogout}  // ← بيستخدم logout من AuthContext
+              className="text-[#9CA3AF] hover:text-[#9D4A2F] transition-colors p-1 h-auto"
               title="Sign out"
             >
               <LogOut className="w-4 h-4" />
             </Button>
           </div>
         </div>
+
       </aside>
     </>
   );

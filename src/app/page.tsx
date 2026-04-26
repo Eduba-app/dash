@@ -1,12 +1,13 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 
 export default async function Home() {
-  const session = await auth();
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token");
 
-  if (!session) {
-    redirect("/login");
-  } else {
+  if (token) {
     redirect("/dashboard");
+  } else {
+    redirect("/login");
   }
 }
