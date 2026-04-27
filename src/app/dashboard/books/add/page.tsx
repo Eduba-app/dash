@@ -16,7 +16,7 @@ import { z } from "zod";
 import camera from "../../../../../public/icons/camera 1.svg";
 import upload from "../../../../../public/icons/folder-upload 1.svg";
 import { Controller } from "react-hook-form";
-// ─── Schema 
+// Schema 
 const bookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -26,7 +26,7 @@ const bookSchema = z.object({
 });
 type BookForm = z.infer<typeof bookSchema>;
 
-// ─── File Drop Zone
+// File Drop Zone
 function FileDropZone({
   accept,
   file,
@@ -112,7 +112,7 @@ function FileDropZone({
   );
 }
 
-// ─── Cover Drop Zone 
+// Cover Drop Zone 
 function CoverDropZone({
   file,
   onSelect,
@@ -187,7 +187,7 @@ function CoverDropZone({
   );
 }
 
-// ─── Main Page 
+// Main Page 
 export default function AddBookPage() {
   const router = useRouter();
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -237,11 +237,11 @@ export default function AddBookPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[#19213D] text-[24px] font-medium">Add book</h1>
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-y-3">
+        <h1 className="text-[#19213D] text-xl sm:text-[24px] font-medium w-full sm:w-auto">Add book</h1>
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
           <Button
             type="button"
             onClick={() => router.back()}
@@ -262,9 +262,9 @@ export default function AddBookPage() {
       </div>
 
       <form id="book-form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-[1fr_380px] gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-5 items-start">
 
-          {/* ── LEFT COLUMN ── */}
+          {/* LEFT COLUMN */}
           <div className="space-y-5">
             {/* Cover */}
             <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6] ">
@@ -311,7 +311,7 @@ export default function AddBookPage() {
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN ── */}
+          {/* RIGHT COLUMN */}
           <div className="space-y-3">
             {/* Price */}
             <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">

@@ -46,7 +46,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const displayName = user?.name ?? "Admin User";
 
   const handleLogout = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // ← منع الـ click يوصل للـ parent div
+    e.stopPropagation(); 
     onClose();
     await logout();
   };
@@ -118,7 +118,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           })}
         </nav>
 
-        {/* User — نفس التصميم الأصلي بالظبط */}
+        {/* User */}
         <div className="mt-6">
           <div
             className={cn(
@@ -136,11 +136,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <span className="text-[#5D6481] text-sm font-medium flex-1 truncate">
               {displayName}
             </span>
-            {/* Logout button جوّا الـ user card — نفس التصميم */}
+            {/* Logout button*/}
             <Button
               type="button"
               variant="ghost"
-              onClick={handleLogout}  // ← بيستخدم logout من AuthContext
+              onClick={handleLogout}  
               className="text-[#9CA3AF] hover:text-[#9D4A2F] transition-colors p-1 h-auto"
               title="Sign out"
             >

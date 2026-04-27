@@ -31,18 +31,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F7] flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-sm w-full max-w-md p-10">
+    <div className="min-h-dvh bg-[#F4F4F7] flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-sm w-full max-w-md p-6 sm:p-10">
         {/* Logo */}
-        <div className="flex items-center gap-2 mb-10">
+        <div className="flex items-center gap-2 mb-6 sm:mb-10">
           <div className="w-10 h-10 bg-[#1C1C2E] rounded-xl flex items-center justify-center">
             <BookOpen className="w-5 h-5 text-white" />
           </div>
           <span className="text-[#1C1C2E] font-bold text-lg tracking-wide">EDUBA</span>
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-[#1C1C2E] text-3xl font-bold mb-2">Welcome back</h1>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-[#1C1C2E] text-2xl sm:text-3xl font-bold mb-2">Welcome back</h1>
           <p className="text-[#6B7280] text-sm">Sign in to your admin account</p>
         </div>
 

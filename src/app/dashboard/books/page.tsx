@@ -30,7 +30,7 @@ function ImportBadge({ status }: { status: ImportStatus }) {
   );
 }
 
-// ─── Delete Dialog
+// Delete Dialog
 function DeleteDialog({ book, onClose }: { book: Book; onClose: () => void }) {
   const queryClient = useQueryClient();
 
@@ -75,7 +75,7 @@ function DeleteDialog({ book, onClose }: { book: Book; onClose: () => void }) {
   );
 }
 
-// ─── Empty State
+// Empty State
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-32">
@@ -95,7 +95,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-// ─── Search Not Found
+// Search Not Found
 function SearchNotFound({ query }: { query: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-4">
@@ -109,7 +109,7 @@ function SearchNotFound({ query }: { query: string }) {
   );
 }
 
-// ─── Skeleton
+// Skeleton
 function SkeletonRows() {
   return (
     <>
@@ -135,7 +135,7 @@ function SkeletonRows() {
   );
 }
 
-// ─── Main Page
+// Main Page
 export default function BooksPage() {
   const router = useRouter();
   const [page, setPage] = useState(1);
