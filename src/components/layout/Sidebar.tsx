@@ -45,11 +45,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     : "AA";
   const displayName = user?.name ?? "Admin User";
 
-  const handleLogout = async (e: React.MouseEvent) => {
-    e.stopPropagation(); 
-    onClose();
-    await logout();
-  };
+  // const handleLogout = async (e: React.MouseEvent) => {
+  //   e.stopPropagation(); 
+  //   onClose();
+  //   await logout();
+  // };
 
   return (
     <>
@@ -81,7 +81,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="w-9 h-9 rounded-2xl flex items-center justify-center">
             <Image src={logo} width={60} height={60} alt="logo" />
           </div>
-          <span className="text-[#5D6481] font-semibold text-[14px] tracking-widest">
+          <span className="text-[#5D6481] font-semibold text-[24px] tracking-widest">
             EDUBA
           </span>
         </div>
@@ -137,7 +137,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               {displayName}
             </span>
             {/* Logout button*/}
-            <Button
+            {/* <Button
               type="button"
               variant="ghost"
               onClick={handleLogout}  
@@ -145,7 +145,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               title="Sign out"
             >
               <LogOut className="w-4 h-4" />
-            </Button>
+            </Button> */}
           </div>
         </div>
 

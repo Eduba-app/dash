@@ -3,21 +3,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { profileService } from "@/services/profile.services";
+import { useAuth } from "@/context/AuthContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import pencilEdit from "../../../../public/icons/penEdit.svg"
+import { LogOut } from "lucide-react";
+import pencilEdit from "../../../../public/icons/penEdit.svg";
 import Image from "next/image";
+import logoutIcon from "../../../../public/icons/login.svg"
 
 export default function ProfilePage() {
   const queryClient = useQueryClient();
+  const { logout } = useAuth();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: profileService.getProfile,
   });
 
-  // Form state 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,7 +30,6 @@ export default function ProfilePage() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingSupport, setIsEditingSupport] = useState(false);
 
-  // ─── Edit Function 
   const startEditingProfile = () => {
     if (profile) {
       setFormData({
@@ -61,7 +63,6 @@ export default function ProfilePage() {
     onError: () => toast.error("Failed to update profile"),
   });
 
-  // ─── Handle Save 
   const handleSaveProfile = async () => {
     const fd = new FormData();
     fd.append("name", formData.name);
@@ -81,7 +82,9 @@ export default function ProfilePage() {
 
   return (
     <div className="p-4 sm:p-6 max-w-259.5 mx-auto">
-      <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold mb-6 sm:mb-8">Profile</h1>
+      <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold mb-6 sm:mb-8">
+        Profile
+      </h1>
 
       {/* Profile Information Card */}
       <div className="bg-white rounded-[32px] shadow-sm border-1.5 border-[#EBEFF6] p-6 mb-6">
@@ -93,11 +96,10 @@ export default function ProfilePage() {
           {!isEditingProfile ? (
             <Button
               size="icon"
-              onClick={startEditingProfile}        
-              className="text-[#A0522D] bg-[#9D4A2F] hover:bg-[#e77751]"
+              onClick={startEditingProfile}
+              className="text-white bg-[#9D4A2F] hover:bg-[#e77751]"
             >
-              {/* <Pencil className="w-5 h-5" /> */}
-              <Image src={pencilEdit} width={12} height={12} alt="pencil edit"/>
+              <Image src={pencilEdit} width={12} height={12} alt="pencil edit" />
             </Button>
           ) : (
             <div className="flex items-center gap-3">
@@ -143,19 +145,17 @@ export default function ProfilePage() {
       </div>
 
       {/* Support Information Card */}
-      <div className="bg-white rounded-3xl shadow-sm border border-[#F4F4F7] p-6">
+      <div className="bg-white rounded-3xl shadow-sm border border-[#F4F4F7] p-6 mb-6">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <h2 className="text-[#19213D] text-[18px] font-medium">Support Information</h2>
 
           {!isEditingSupport ? (
             <Button
-              variant="ghost"
               size="icon"
-              onClick={startEditingSupport}          
-              className="text-[#A0522D] bg-[#9D4A2F] hover:bg-[#e77751]"
+              onClick={startEditingSupport}
+              className="text-white bg-[#9D4A2F] hover:bg-[#e77751]"
             >
-              {/* <Pencil className="w-5 h-5" /> */}
-              <Image src={pencilEdit} width={12} height={12} alt="pencil edit"/>
+              <Image src={pencilEdit} width={12} height={12} alt="pencil edit" />
             </Button>
           ) : (
             <div className="flex items-center gap-3">
@@ -178,9 +178,11 @@ export default function ProfilePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[#19213D] mb-1.5">Support Link</label>
+          <label className="block text-sm font-medium text-[#19213D] mb-1.5">
+            Support Link
+          </label>
           <Input
-          placeholder="dsadasdasdas"
+            placeholder="https://..."
             value={isEditingSupport ? formData.supportLink : profile.supportLink || ""}
             onChange={(e) => setFormData({ ...formData, supportLink: e.target.value })}
             disabled={!isEditingSupport}
@@ -188,6 +190,21 @@ export default function ProfilePage() {
           />
         </div>
       </div>
+
+      {/* Logout Button */}
+      {isEditingSupport || isEditingProfile ? "" :
+        <div className="flex justify-end">
+          <Button
+            onClick={logout}
+            className="flex items-center gap-2 px-6 h-11 bg-[#FF383C24] hover:bg-red-100 text-red-500 hover:text-red-600 border rounded-[12px] font-medium transition-colors"
+            variant="ghost"
+          >
+            {/* <LogOut className="w-4 h-4" /> */}
+            <Image src={logoutIcon} width={14} height={14} alt="logout buttons" />
+            Logout
+          </Button>
+        </div>
+      }
     </div>
   );
 }

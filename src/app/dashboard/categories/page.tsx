@@ -15,11 +15,11 @@ import pencil from "../../../../public/icons/edit-2.svg";
 import trash from "../../../../public/icons/trash.svg";
 import frame from "../../../../public/images/Frame 16.png";
 
-// ─── helpers
+// helpers
 const toSlug = (str: string) =>
   str.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-// ─── Schema
+// Schema
 const categorySchema = z.object({
   name: z.string().min(1, "Category name is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -27,7 +27,7 @@ const categorySchema = z.object({
 });
 type CategoryForm = z.infer<typeof categorySchema>;
 
-// ─── Delete Dialog
+// Delete Dialog
 function DeleteDialog({
   category,
   onClose,
@@ -83,7 +83,7 @@ function DeleteDialog({
   );
 }
 
-// ─── Add Dialog
+// Add Dialog
 function AddCategoryDialog({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient();
   const [displayOrderValue, setDisplayOrderValue] = useState(0);
@@ -153,6 +153,7 @@ function AddCategoryDialog({ onClose }: { onClose: () => void }) {
               type="number"
               min={0}
               value={displayOrderValue}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => {
                 const val = parseInt(e.target.value) || 0;
                 setDisplayOrderValue(val);
@@ -185,7 +186,7 @@ function AddCategoryDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── Empty State
+// Empty State
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-32">
@@ -207,7 +208,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-// ─── Main Page
+// Main Page
 export default function CategoriesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");

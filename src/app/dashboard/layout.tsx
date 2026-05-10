@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import logo from "../../../public/images/logo.svg";
@@ -12,6 +12,21 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const hasReadableToken = document.cookie.includes("access_token_readable=");
+      if (!hasReadableToken) {
+        await fetch("/api/auth/logout", { method: "POST" });
+        window.location.href = "/login";
+      }
+    };
+
+    checkSession();
+
+    const interval = setInterval(checkSession, 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F4F4F7]">

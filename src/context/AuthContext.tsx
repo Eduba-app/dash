@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { useRouter } from "next/navigation";
 
 interface User {
@@ -20,20 +27,31 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-function getCookie(name: string): string | null {
+function getUserFromCookie(): User | null {
   if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
+  try {
+    const match = document.cookie.match(/(^|;\s*)user_info=([^;]+)/);
+    if (!match) return null;
+    return JSON.parse(decodeURIComponent(match[2]));
+  } catch {
+    return null;
+  }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user,      setUser]      = useState<User | null>(() => {
-    const raw = getCookie("user_info");
-    if (!raw) return null;
-    try { return JSON.parse(raw) as User; } catch { return null; }
-  });
-  const isLoading = false;
-  const router = useRouter();
+  const [user,      setUser]      = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router     = useRouter();
+  const initialized = useRef(false); 
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
+    const u = getUserFromCookie();
+    setUser(u);
+    setIsLoading(false);
+  }, []); 
 
   const login = useCallback(async (email: string, password: string) => {
     const res = await fetch("/api/auth/login", {
@@ -43,20 +61,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const data = await res.json();
-
     if (!res.ok) throw new Error(data.message || "Login failed");
 
     setUser(data.user);
     router.push("/dashboard");
-    router.refresh();
   }, [router]);
 
   const logout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
-    router.push("/login");
-    router.refresh();
-  }, [router]);
+    window.location.href = "/login";
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, login, logout }}>

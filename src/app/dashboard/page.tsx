@@ -8,7 +8,7 @@ import timer from "../../../public/icons/timer.svg";
 import { booksService } from "@/services/books.services";
 import { Book } from "@/types/book";
 
-// ─── Book Row
+// Book Row
 function BookRow({ book }: { book: Book }) {
   return (
     <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] last:border-0 hover:bg-[#FAFAFA] transition-colors">
@@ -46,7 +46,7 @@ function BookRow({ book }: { book: Book }) {
   );
 }
 
-// ─── Skeleton
+// Skeleton
 function BookSkeleton() {
   return (
     <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_1fr_auto] items-center px-4 py-3 border-b border-[#F6F8FC] animate-pulse">
@@ -63,7 +63,7 @@ function BookSkeleton() {
   );
 }
 
-// ─── Main Page
+// Main Page
 export default function DashboardPage() {
   const { data: booksResponse, isLoading } = useQuery({
     queryKey: ["books", 1, ""],
@@ -76,7 +76,7 @@ export default function DashboardPage() {
     <div className="p-4 sm:p-6 space-y-5 pb-0">
       <h1 className="text-[#19213D] text-2xl sm:text-[32px] font-semibold">Dashboard</h1>
 
-      {/* ── Overview ── */}
+      {/* Overview */}
       <div className="bg-white rounded-2xl p-4 sm:p-6">
         <h2 className="text-[#19213D] text-base font-medium mb-4">Overview</h2>
 
