@@ -1,25 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import logo from "../../../public/images/logo.svg";
-import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import barchart         from "../../../public/icons/chart.svg";
-import barchartActive   from "../../../public/icons/chartActive.svg";
-import layoutgrid       from "../../../public/icons/category-2.svg";
-import layoutgridActive from "../../../public/icons/categoryActive-2.svg";
-import books            from "../../../public/icons/book.svg";
-import booksActive      from "../../../public/icons/bookActive.svg";
-import users            from "../../../public/icons/user.svg";
-import usersActive      from "../../../public/icons/userActive.svg";
-import bookmarked       from "../../../public/icons/clipboard.svg";
-import bookmarkedActive from "../../../public/icons/clipboardActive.svg";
-import bell             from "../../../public/icons/notification.svg";
-import bellActive       from "../../../public/icons/notificationActive.svg";
-import { LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import books from "../../../public/icons/book.svg";
+import booksActive from "../../../public/icons/bookActive.svg";
+import layoutgrid from "../../../public/icons/category-2.svg";
+import layoutgridActive from "../../../public/icons/categoryActive-2.svg";
+import barchart from "../../../public/icons/chart.svg";
+import barchartActive from "../../../public/icons/chartActive.svg";
+import bookmarked from "../../../public/icons/clipboard.svg";
+import bookmarkedActive from "../../../public/icons/clipboardActive.svg";
+import bell from "../../../public/icons/notification.svg";
+import bellActive from "../../../public/icons/notificationActive.svg";
+import users from "../../../public/icons/user.svg";
+import usersActive from "../../../public/icons/userActive.svg";
+import logo from "../../../public/images/logo.svg";
 
 const navItems = [
   { href: "/dashboard",               label: "Dashboard",    icon: barchart,   iconActive: barchartActive   },
@@ -78,8 +77,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Logo */}
         <div className="flex items-center gap-2 px-2 mb-10">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center">
-            <Image src={logo} width={60} height={60} alt="logo" />
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+            <Image src={logo} width={62} height={62} alt="logo" />
           </div>
           <span className="text-[#5D6481] font-semibold text-[24px] tracking-widest">
             EDUBA
