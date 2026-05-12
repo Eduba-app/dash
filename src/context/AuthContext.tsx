@@ -23,6 +23,7 @@ interface AuthContextType {
   isLoading: boolean;
   login:     (email: string, password: string) => Promise<void>;
   logout:    () => Promise<void>;
+  clearSession: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -36,6 +37,15 @@ function getUserFromCookie(): User | null {
   } catch {
     return null;
   }
+}
+
+function clearAuthCookies() {
+  if (typeof document === "undefined") return;
+  
+  const cookies = ["access_token_readable", "user_info"];
+  cookies.forEach(name => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  });
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -67,14 +77,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/dashboard");
   }, [router]);
 
-  const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+  const clearSession = useCallback(() => {
+    clearAuthCookies();
     setUser(null);
-    window.location.href = "/login";
   }, []);
 
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      clearSession();
+      window.location.href = "/login";
+    }
+  }, [clearSession]);
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, clearSession }}>
       {children}
     </AuthContext.Provider>
   );

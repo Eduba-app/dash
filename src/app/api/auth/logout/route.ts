@@ -1,3 +1,4 @@
+// app/api/auth/logout/rout.ts
 import { NextResponse } from "next/server";
 
 export async function POST() {

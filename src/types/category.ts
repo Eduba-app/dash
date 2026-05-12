@@ -12,6 +12,4 @@ export interface Category {
 
 export interface CreateCategoryPayload {
   name: string;
-  slug: string;
-  displayOrder?: number;
 }
