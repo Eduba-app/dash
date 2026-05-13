@@ -79,7 +79,7 @@ export function BooksTable() {
 
                 <Button
                     onClick={() => router.push("/dashboard/books/add")}
-                    className="hidden sm:flex ml-auto items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
+                    className="hidden cursor-pointer sm:flex ml-auto items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
                 >
                     <Plus className="w-4 h-4" />
                     Add New Book
@@ -167,7 +167,7 @@ export function BooksTable() {
                                     <div className="flex items-center gap-2 justify-end">
                                         <Button
                                             onClick={() => setDeleteTarget(book)}
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
                                             title="Delete book"
                                         >
                                             <Image src={trash} width={24} height={24} alt="trash" />
@@ -175,7 +175,7 @@ export function BooksTable() {
                                         <button
                                             onClick={() => setEditTarget(book)}
                                             title="Edit book"
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
                                         >
                                             <Image
                                                 src={pencil}
@@ -197,14 +197,14 @@ export function BooksTable() {
                                 <Button
                                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                                     disabled={page === 1}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-9 h-9 cursor-pointer rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </Button>
                                 <Button
                                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={page === totalPages}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-9 h-9 cursor-pointer rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </Button>

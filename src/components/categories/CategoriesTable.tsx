@@ -56,7 +56,7 @@ export function CategoriesTable() {
                     {!isEmpty && !isLoading && (
                         <Button
                             onClick={() => setShowDialog(true)}
-                            className="sm:hidden w-10 h-10 bg-[#A0522D] text-white rounded-[12px] hover:bg-[#8B4513] transition-colors flex items-center justify-center p-0"
+                            className="sm:hidden w-10 h-10 cursor-pointer bg-[#A0522D] text-white rounded-[12px] hover:bg-[#8B4513] transition-colors flex items-center justify-center p-0"
                         >
                             <Plus className="w-4 h-4" />
                         </Button>
@@ -82,7 +82,7 @@ export function CategoriesTable() {
                 {!isEmpty && !isLoading && (
                     <Button
                         onClick={() => setShowDialog(true)}
-                        className="hidden sm:flex ml-auto items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
+                        className="hidden sm:flex ml-auto cursor-pointer items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors shrink-0"
                     >
                         <Plus className="w-4 h-4" />
                         Add New Category
@@ -159,7 +159,7 @@ export function CategoriesTable() {
                                     <div className="flex items-center gap-2 justify-end">
                                         <Button
                                             onClick={() => setDeleteTarget(cat)}
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
                                             title="Delete category"
                                         >
                                             <Image src={trash} width={24} height={24} alt="trash" />
@@ -167,7 +167,7 @@ export function CategoriesTable() {
                                         <Button
                                             onClick={() => setEditTarget(cat)}
                                             title="Edit category"
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
                                         >
                                             <Image
                                                 src={pencil}
@@ -189,14 +189,14 @@ export function CategoriesTable() {
                                 <Button
                                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                                     disabled={page === 1}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40"
+                                    className="w-9 h-9 cursor-pointer rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </Button>
                                 <Button
                                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={page === totalPages}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40"
+                                    className="w-9 h-9 rounded-xl cursor-pointer border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </Button>

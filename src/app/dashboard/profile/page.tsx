@@ -2,15 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { profileService } from "@/services/profile.services";
 import { useAuth } from "@/context/AuthContext";
+import { profileService } from "@/services/profile.services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
-import { LogOut } from "lucide-react";
+import logoutIcon from "../../../../public/icons/login.svg";
 import pencilEdit from "../../../../public/icons/penEdit.svg";
-import Image from "next/image";
-import logoutIcon from "../../../../public/icons/login.svg"
 
 export default function ProfilePage() {
   const queryClient = useQueryClient();
@@ -97,7 +96,7 @@ export default function ProfilePage() {
             <Button
               size="icon"
               onClick={startEditingProfile}
-              className="text-white bg-[#9D4A2F] hover:bg-[#e77751]"
+              className="text-white cursor-pointer bg-[#9D4A2F] hover:bg-[#e77751]"
             >
               <Image src={pencilEdit} width={12} height={12} alt="pencil edit" />
             </Button>
@@ -106,14 +105,14 @@ export default function ProfilePage() {
               <Button
                 variant="outline"
                 onClick={() => setIsEditingProfile(false)}
-                className="bg-[#EBEFF6] text-[#9D4A2F] px-4 sm:px-6"
+                className="bg-[#EBEFF6] cursor-pointer text-[#9D4A2F] px-4 sm:px-6"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSaveProfile}
                 disabled={updateMutation.isPending}
-                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-4 sm:px-6"
+                className="bg-[#9D4A2F] cursor-pointer hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
                 {updateMutation.isPending ? "Saving..." : "Save"}
               </Button>
@@ -153,7 +152,7 @@ export default function ProfilePage() {
             <Button
               size="icon"
               onClick={startEditingSupport}
-              className="text-white bg-[#9D4A2F] hover:bg-[#e77751]"
+              className="text-white cursor-pointer bg-[#9D4A2F] hover:bg-[#e77751]"
             >
               <Image src={pencilEdit} width={12} height={12} alt="pencil edit" />
             </Button>
@@ -162,14 +161,14 @@ export default function ProfilePage() {
               <Button
                 variant="outline"
                 onClick={() => setIsEditingSupport(false)}
-                className="bg-[#EBEFF6] text-[#9D4A2F] px-4 sm:px-6"
+                className="bg-[#EBEFF6] cursor-pointer text-[#9D4A2F] px-4 sm:px-6"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSaveSupport}
                 disabled={updateMutation.isPending}
-                className="bg-[#9D4A2F] hover:bg-[#e77751] text-white px-4 sm:px-6"
+                className="bg-[#9D4A2F] cursor-pointer hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
                 {updateMutation.isPending ? "Saving..." : "Save"}
               </Button>
@@ -196,7 +195,7 @@ export default function ProfilePage() {
         <div className="flex justify-end">
           <Button
             onClick={logout}
-            className="flex items-center gap-2 px-6 h-11 bg-[#FF383C24] hover:bg-red-100 text-red-500 hover:text-red-600 border rounded-[12px] font-medium transition-colors"
+            className="flex cursor-pointer items-center gap-2 px-6 h-11 bg-[#FF383C24] hover:bg-red-100 text-red-500 hover:text-red-600 border rounded-[12px] font-medium transition-colors"
             variant="ghost"
           >
             {/* <LogOut className="w-4 h-4" /> */}

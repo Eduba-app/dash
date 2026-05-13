@@ -40,14 +40,14 @@ export function DeleteBookDialog({ book, onClose }: DeleteBookDialogProps) {
                     <button
                         onClick={onClose}
                         disabled={isPending}
-                        className="flex-1 h-11 rounded-xl border border-[#E5E7EB] text-[#6B7280] text-sm font-medium hover:bg-[#F4F4F7] transition-colors disabled:opacity-60"
+                        className="flex-1 h-11 cursor-pointer rounded-xl border border-[#E5E7EB] text-[#6B7280] text-sm font-medium hover:bg-[#F4F4F7] transition-colors disabled:opacity-60"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={() => deleteBook()}
                         disabled={isPending}
-                        className="flex-1 h-11 rounded-xl bg-[#A0522D] text-white text-sm font-semibold hover:bg-[#8B4513] transition-colors disabled:opacity-60"
+                        className="flex-1 h-11 cursor-pointer rounded-xl bg-[#A0522D] text-white text-sm font-semibold hover:bg-[#8B4513] transition-colors disabled:opacity-60"
                     >
                         {isPending ? "Deleting..." : "Delete"}
                     </button>

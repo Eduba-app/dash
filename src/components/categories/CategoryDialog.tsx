@@ -115,14 +115,14 @@ export function CategoryDialog({ category, onClose }: CategoryDialogProps) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-8 h-11 text-sm font-medium transition-colors rounded-[12px] bg-[#EBEFF6] border border-[#E5E7EB] text-[#9D4A2F] hover:bg-[#F4F4F7]"
+                            className="px-8 h-11 cursor-pointer text-sm font-medium transition-colors rounded-[12px] bg-[#EBEFF6] border border-[#E5E7EB] text-[#9D4A2F] hover:bg-[#F4F4F7]"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-12 rounded-xl bg-[#A0522D] text-white text-sm font-semibold hover:bg-[#8B4513] transition-colors disabled:opacity-60"
+                            className="flex-1 h-12 cursor-pointer rounded-xl bg-[#A0522D] text-white text-sm font-semibold hover:bg-[#8B4513] transition-colors disabled:opacity-60"
                         >
                             {isPending
                                 ? isEdit

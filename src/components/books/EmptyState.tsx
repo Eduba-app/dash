@@ -16,7 +16,7 @@ export function EmptyState({ onAdd }: EmptyStateProps) {
             </p>
             <button
                 onClick={onAdd}
-                className="flex items-center gap-2 px-8 h-12 bg-[#A0522D] text-white text-sm font-semibold rounded-xl hover:bg-[#8B4513] transition-colors"
+                className="flex cursor-pointer items-center gap-2 px-8 h-12 bg-[#A0522D] text-white text-sm font-semibold rounded-xl hover:bg-[#8B4513] transition-colors"
             >
                 <Plus className="w-4 h-4" />
                 Add New Book

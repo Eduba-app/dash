@@ -270,14 +270,14 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-11 text-sm font-medium transition-colors rounded-[12px] bg-[#EBEFF6] border border-[#E5E7EB] text-[#9D4A2F] hover:bg-[#F4F4F7]"
+              className="flex-1 h-11 cursor-pointer text-sm font-medium transition-colors rounded-[12px] bg-[#EBEFF6] border border-[#E5E7EB] text-[#9D4A2F] hover:bg-[#F4F4F7]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 h-11 text-sm transition-colors disabled:opacity-60 rounded-[12px] bg-[#A0522D] text-white font-medium hover:bg-[#8B4513]"
+              className="flex-1 h-11 cursor-pointer text-sm transition-colors disabled:opacity-60 rounded-[12px] bg-[#A0522D] text-white font-medium hover:bg-[#8B4513]"
             >
               {isPending ? "Updating..." : "Update Book"}
             </button>
