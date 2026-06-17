@@ -48,14 +48,14 @@ export function DeactivateUserDialog({
                     <button
                         onClick={onClose}
                         disabled={isPending}
-                        className="flex-1 h-11 rounded-xl border border-[#E5E7EB] text-[#6B7280] text-sm font-medium hover:bg-[#F4F4F7] transition-colors disabled:opacity-60"
+                        className="flex-1 h-11 cursor-pointer rounded-xl border border-[#E5E7EB] text-[#6B7280] text-sm font-medium hover:bg-[#F4F4F7] transition-colors disabled:opacity-60"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={() => deactivateUser()}
                         disabled={isPending}
-                        className="flex-1 h-11 rounded-xl bg-[#9D4A2F] text-white text-sm font-semibold hover:bg-amber-600 transition-colors disabled:opacity-60"
+                        className="flex-1 h-11 cursor-pointer rounded-xl bg-[#9D4A2F] text-white text-sm font-semibold hover:bg-[#8B4513] transition-colors disabled:opacity-60"
                     >
                         {isPending ? "Deactivating..." : "Deactivate"}
                     </button>

@@ -47,7 +47,7 @@ export function PriceTiersTable() {
                 </h1>
                 <Button
                     onClick={() => setDialogTarget("new")}
-                    className="flex items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors"
+                    className="flex cursor-pointer items-center gap-2 px-5 h-11 bg-[#A0522D] text-white text-sm font-medium rounded-[12px] hover:bg-[#8B4513] transition-colors"
                 >
                     <Plus className="w-4 h-4" />
                     <span className="hidden sm:inline">Add Price Tier</span>
@@ -132,7 +132,7 @@ export function PriceTiersTable() {
                                     <div className="flex items-center gap-2 justify-end">
                                         <Button
                                             onClick={() => setDeleteTarget(tier)}
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
                                             title="Delete tier"
                                         >
                                             <Image src={trash} width={24} height={24} alt="trash" />
@@ -140,7 +140,7 @@ export function PriceTiersTable() {
                                         <button
                                             onClick={() => setDialogTarget(tier)}
                                             title="Edit tier"
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors"
                                         >
                                             <Image
                                                 src={pencil}

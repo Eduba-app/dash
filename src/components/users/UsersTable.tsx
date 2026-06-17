@@ -156,7 +156,7 @@ export function UsersTable() {
                                     <div className="flex items-center gap-2 justify-end">
                                         <Button
                                             onClick={() => setDeleteTarget(user)}
-                                            className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
+                                            className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#A0522D] hover:bg-red-100 hover:text-red-600 transition-colors"
                                             title="Delete user"
                                         >
                                             <Image src={trash} width={24} height={24} alt="trash" />
@@ -165,7 +165,7 @@ export function UsersTable() {
                                             <button
                                                 onClick={() => setDeactivateTarget(user)}
                                                 title="Deactivate user"
-                                                className="w-9 h-9 rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#9D4A2F] hover:bg-amber-100 transition-colors"
+                                                className="w-9 h-9 cursor-pointer rounded-[12px] bg-[#F4F4F7] flex items-center justify-center text-[#9D4A2F] hover:bg-amber-100 transition-colors"
                                             >
                                                 <ShieldOff className="w-4 h-4" />
                                             </button>
@@ -183,14 +183,14 @@ export function UsersTable() {
                                 <Button
                                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                                     disabled={page === 1}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-9 h-9 rounded-xl cursor-pointer border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </Button>
                                 <Button
                                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={page === totalPages}
-                                    className="w-9 h-9 rounded-xl border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="w-9 h-9 rounded-xl cursor-pointer border border-[#E5E7EB] bg-white flex items-center justify-center text-[#6B7280] hover:bg-[#F4F4F7] disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </Button>
