@@ -1,7 +1,5 @@
-import React from 'react'
+import { UsersTable } from "@/components/users/UsersTable";
 
-export default function UserPage() {
-  return (
-    <div>user</div>
-  )
+export default function UsersPage() {
+  return <UsersTable />;
 }

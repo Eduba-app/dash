@@ -1,7 +1,5 @@
-import React from 'react'
+import { BundlesTable } from "@/components/book-sets/BundlesTable";
 
 export default function BookSetsPage() {
-  return (
-    <div>BookSets</div>
-  )
+  return <BundlesTable />;
 }

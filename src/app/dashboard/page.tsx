@@ -6,6 +6,7 @@ import balance from "../../../public/icons/Balance Icon.svg";
 import users from "../../../public/icons/Customer Icon.svg";
 import timer from "../../../public/icons/timer.svg";
 import { booksService } from "@/services/books.services";
+import { usersService } from "@/services/users.services";
 import { Book } from "@/types/book";
 
 // Book Row
@@ -70,6 +71,14 @@ export default function DashboardPage() {
     queryFn: () => booksService.getAll({ page: 1, limit: 7 }),
   });
 
+  const { data: usersResponse } = useQuery({
+    queryKey: ["users-count"],
+    queryFn: () => usersService.getAll({ page: 1, limit: 1 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const totalUsers = usersResponse?.data?.meta?.total;
+
   const books: Book[] = booksResponse?.data?.data ?? [];
 
   return (
@@ -87,7 +96,9 @@ export default function DashboardPage() {
               <Image src={users} width={24} height={24} alt="users icon" />
               <span>Users</span>
             </div>
-            <p className="text-[#19213D] text-[40px] sm:text-[60px] font-semibold">1,293</p>
+            <p className="text-[#19213D] text-[40px] sm:text-[60px] font-semibold">
+              {totalUsers?.toLocaleString() ?? "—"}
+            </p>
           </div>
 
           {/* Revenue */}

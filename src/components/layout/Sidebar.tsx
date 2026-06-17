@@ -19,6 +19,8 @@ import bellActive from "../../../public/icons/notificationActive.svg";
 import users from "../../../public/icons/user.svg";
 import usersActive from "../../../public/icons/userActive.svg";
 import logo from "../../../public/images/logo.svg";
+import priceTagActive from "../../../public/icons/price-tag-white.svg";
+import priceTag from "../../../public/icons/price-tag.svg";
 
 const navItems = [
   { href: "/dashboard",               label: "Dashboard",    icon: barchart,   iconActive: barchartActive   },
@@ -26,6 +28,7 @@ const navItems = [
   { href: "/dashboard/books",         label: "Books",        icon: books,      iconActive: booksActive      },
   { href: "/dashboard/users",         label: "Users",        icon: users,      iconActive: usersActive      },
   { href: "/dashboard/book-sets",     label: "Book sets",    icon: bookmarked, iconActive: bookmarkedActive },
+  { href: "/dashboard/price-tiers",   label: "Price Tiers",  icon: priceTag,   iconActive: priceTagActive },
   { href: "/dashboard/notifications", label: "Notification", icon: bell,       iconActive: bellActive       },
 ];
 
