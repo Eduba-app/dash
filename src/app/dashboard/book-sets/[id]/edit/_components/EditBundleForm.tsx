@@ -15,6 +15,7 @@ import { bundlesService } from "@/services/bundles.services";
 import { categoriesService } from "@/services/categories.services";
 import { priceTiersService } from "@/services/price-tiers.services";
 import { BundleBooksSection } from "./BundleBooksSection";
+import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 import camera from "../../../../../../../public/icons/camera 1.svg";
 
 const bundleSchema = z.object({
@@ -387,17 +388,13 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
                                 control={control}
                                 name="priceTierId"
                                 render={({ field: { onChange, value } }) => (
-                                    <Dropdown
+                                    <PriceTierDropdown
                                         value={value}
                                         onChange={(v) => {
                                             onChange(v);
                                             setValue("priceTierId", v);
                                         }}
-                                        options={priceTiers.map((t) => ({
-                                            id: t.id,
-                                            label: `${t.displayName} ($${(t.priceCents / 100).toFixed(0)})`,
-                                        }))}
-                                        placeholder="Select a price tier"
+                                        priceTiers={priceTiers}
                                     />
                                 )}
                             />

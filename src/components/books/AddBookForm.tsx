@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -11,19 +11,20 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { booksService } from "@/services/books.services";
 import { categoriesService } from "@/services/categories.services";
+import { priceTiersService } from "@/services/price-tiers.services";
 import { CoverUpload } from "./CoverUpload";
 import { FileUpload } from "./FileUpload";
 import { BookDetailsSection } from "./BookDetailsSection";
 import { CategorySelector } from "./CategorySelector";
-import { PriceInput } from "./PriceInput";
 import { FreeCardsInput } from "./FreeCardsInput";
+import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 import upload from "../../../public/icons/folder-upload 1.svg";
 
 const bookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   categoryId: z.string().min(1, "Category is required"),
-  priceUSD: z.number().min(0, "Price must be 0 or more"),
+  priceTierId: z.string().min(1, "Price tier is required"),
   freeTrialCardCount: z.number().min(0).optional(),
 });
 
@@ -33,7 +34,6 @@ export function AddBookForm() {
   const router = useRouter();
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [apkgFile, setApkgFile] = useState<File | null>(null);
-  const [priceValue, setPriceValue] = useState(0);
   const [freeCardsValue, setFreeCardsValue] = useState(0);
 
   const {
@@ -45,7 +45,7 @@ export function AddBookForm() {
   } = useForm<BookForm>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      priceUSD: 0,
+      priceTierId: "",
       freeTrialCardCount: 0,
       categoryId: "",
     },
@@ -56,6 +56,12 @@ export function AddBookForm() {
     queryFn: () => categoriesService.getAll(),
   });
   const categories = categoriesData?.data ?? [];
+
+  const { data: priceTiersData } = useQuery({
+    queryKey: ["price-tiers"],
+    queryFn: () => priceTiersService.getAll({ page: 1, limit: 50 }),
+  });
+  const priceTiers = priceTiersData?.data?.data ?? [];
 
   const { mutate: createBook, isPending } = useMutation({
     mutationFn: booksService.create,
@@ -75,11 +81,12 @@ export function AddBookForm() {
       toast.error("Please upload an APKG file");
       return;
     }
+    const tier = priceTiers.find((t) => t.id === data.priceTierId);
     createBook({
       title: data.title,
       description: data.description,
       categoryId: data.categoryId,
-      priceCents: Math.round(data.priceUSD * 100),
+      priceCents: tier?.priceCents ?? 0,
       freeTrialCardCount: data.freeTrialCardCount,
       cover: coverFile,
       apkg: apkgFile,
@@ -135,12 +142,31 @@ export function AddBookForm() {
 
           {/* RIGHT COLUMN */}
           <div className="space-y-3">
-            {/* Price */}
-            <PriceInput
-              value={priceValue}
-              onChange={setPriceValue}
-              setValue={setValue}
-            />
+            {/* Price Tier */}
+            <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">
+              <h2 className="text-[#19213D] font-semibold text-[20px] mb-4">
+                Price
+              </h2>
+              <label className="block text-sm text-[#19213D] font-semibold mb-1.5">
+                Price Tier
+              </label>
+              <Controller
+                control={control}
+                name="priceTierId"
+                render={({ field: { onChange, value } }) => (
+                  <PriceTierDropdown
+                    value={value}
+                    onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
+                    priceTiers={priceTiers}
+                  />
+                )}
+              />
+              {errors.priceTierId && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.priceTierId.message}
+                </p>
+              )}
+            </div>
 
             {/* APKG Upload */}
             <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">

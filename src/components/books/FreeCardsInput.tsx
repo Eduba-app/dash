@@ -4,7 +4,7 @@ interface BookFormInputs {
     title: string;
     description: string;
     categoryId: string;
-    priceUSD: number;
+    priceTierId: string;
     freeTrialCardCount?: number;
 }
 

@@ -6,6 +6,7 @@ export interface Book {
   description: string;
   coverImageUrl: string | null;  // ← coverImageUrl مش coverUrl
   priceCents: number;
+  priceTierId?: string;
   freeTrialCardCount?: number;
   isActive: boolean;
   importStatus: ImportStatus;

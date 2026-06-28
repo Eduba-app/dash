@@ -1,22 +1,12 @@
 import { DollarSign } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { UseFormSetValue } from "react-hook-form";
-
-interface BookFormInputs {
-    title: string;
-    description: string;
-    categoryId: string;
-    priceUSD: number;
-    freeTrialCardCount?: number;
-}
 
 interface PriceInputProps {
     value: number;
     onChange: (value: number) => void;
-    setValue: UseFormSetValue<BookFormInputs>;
 }
 
-export function PriceInput({ value, onChange, setValue }: PriceInputProps) {
+export function PriceInput({ value, onChange }: PriceInputProps) {
     return (
         <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">
             <h2 className="text-[#19213D] font-semibold text-[20px] mb-4">Price</h2>
@@ -36,7 +26,6 @@ export function PriceInput({ value, onChange, setValue }: PriceInputProps) {
                     onChange={(e) => {
                         const v = parseFloat(e.target.value) || 0;
                         onChange(v);
-                        setValue("priceUSD", v);
                     }}
                     className="w-full h-10 pl-10 pr-4 rounded-full border border-[#E5E7EB] bg-white text-sm"
                 />

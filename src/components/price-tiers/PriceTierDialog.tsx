@@ -153,6 +153,7 @@ export function PriceTierDialog({ tier, onClose }: PriceTierDialogProps) {
                             render={({ field: { onChange, value } }) => (
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input
+                                        aria-label="input"
                                         type="checkbox"
                                         checked={value}
                                         onChange={(e) => onChange(e.target.checked)}

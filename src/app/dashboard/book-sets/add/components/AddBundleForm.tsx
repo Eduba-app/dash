@@ -15,7 +15,7 @@ import { bundlesService } from "@/services/bundles.services";
 import { categoriesService } from "@/services/categories.services";
 import { priceTiersService } from "@/services/price-tiers.services";
 import camera from "../../../../../../public/icons/camera 1.svg";
-import { PriceTierDropdown } from "./PriceTierDropdown";
+import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 
 const bundleSchema = z.object({
     title: z.string().min(1, "Book set name is required"),

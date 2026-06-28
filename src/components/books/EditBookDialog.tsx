@@ -1,23 +1,24 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { ImageUpload } from "@/components/categories/ImageUpload";
 import { booksService } from "@/services/books.services";
 import { categoriesService } from "@/services/categories.services";
+import { priceTiersService } from "@/services/price-tiers.services";
 import { Book } from "@/types/book";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, DollarSign } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 
 const editBookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   categoryId: z.string().min(1, "Category is required"),
-  priceUSD: z.number().min(0, "Price must be 0 or more"),
+  priceTierId: z.string().min(1, "Price tier is required"),
   freeTrialCardCount: z.number().min(0).optional(),
   isActive: z.boolean().optional(),
 });
@@ -31,9 +32,20 @@ interface EditBookDialogProps {
 export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
   const queryClient = useQueryClient();
   const [selectedCover, setSelectedCover] = useState<File | null>(null);
-  const [priceValue, setPriceValue] = useState(book.priceCents / 100);
   const [freeCardsValue, setFreeCardsValue] = useState(book.freeTrialCardCount ?? 0);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoriesService.getAll(),
+  });
+  const categories = categoriesData?.data ?? [];
+
+  const { data: priceTiersData } = useQuery({
+    queryKey: ["price-tiers"],
+    queryFn: () => priceTiersService.getAll({ page: 1, limit: 50 }),
+  });
+  const priceTiers = priceTiersData?.data?.data ?? [];
 
   const {
     register,
@@ -47,29 +59,25 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
       title: book.title,
       description: book.description,
       categoryId: book.category?.id || "",
-      priceUSD: book.priceCents / 100,
+      priceTierId: book.priceTierId ?? "",
       freeTrialCardCount: book.freeTrialCardCount ?? 0,
       isActive: book.isActive ?? true,
     },
   });
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => categoriesService.getAll(),
-  });
-  const categories = categoriesData?.data ?? [];
-
   const { mutate: updateBook, isPending } = useMutation({
-    mutationFn: (data: EditBookForm) =>
-      booksService.update(book.id, {
+    mutationFn: (data: EditBookForm) => {
+      const tier = priceTiers.find((t) => t.id === data.priceTierId);
+      return booksService.update(book.id, {
         title: data.title,
         description: data.description,
         categoryId: data.categoryId,
-        priceCents: Math.round(data.priceUSD * 100),
+        priceCents: tier?.priceCents ?? book.priceCents,
         freeTrialCardCount: data.freeTrialCardCount,
         isActive: data.isActive,
         cover: selectedCover,
-      }),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
       toast.success("Book updated successfully");
@@ -128,7 +136,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
             )}
           </div>
 
-          {/* Two columns: Category & Price */}
+          {/* Two columns: Category & Price Tier */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Category */}
             <div>
@@ -187,30 +195,27 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
               )}
             </div>
 
-            {/* Price */}
+            {/* Price Tier */}
             <div>
-              <label htmlFor="priceUSD" className="block text-sm font-medium text-[#1C1C2E] mb-1.5">
-                Price (USD)
+              <label className="block text-sm font-medium text-[#1C1C2E] mb-1.5">
+                Price Tier
               </label>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#FFF0EB] border border-[#F0C4A8] rounded-full flex items-center justify-center">
-                  <DollarSign className="w-3.5 h-3.5 text-[#A0522D]" />
-                </div>
-                <input
-                  id="priceUSD"
-                  type="number"
-                  min={0}
-                  step={1}
-                  value={priceValue}
-                  onFocus={(e) => e.target.select()}
-                  onChange={(e) => {
-                    const v = parseFloat(e.target.value) || 0;
-                    setPriceValue(v);
-                    setValue("priceUSD", v);
-                  }}
-                  className="w-full h-12 pl-11 pr-4 rounded-xl border border-[#E5E7EB] bg-[#F9F9FB] text-[#1C1C2E] text-sm outline-none focus:border-[#A0522D] focus:ring-2 focus:ring-[#A0522D]/10 transition-all"
-                />
-              </div>
+              <Controller
+                control={control}
+                name="priceTierId"
+                render={({ field: { onChange, value } }) => (
+                  <PriceTierDropdown
+                    value={value}
+                    onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
+                    priceTiers={priceTiers}
+                  />
+                )}
+              />
+              {errors.priceTierId && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.priceTierId.message}
+                </p>
+              )}
             </div>
           </div>
 
