@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { booksService } from "@/services/books.services";
@@ -21,7 +22,13 @@ export function DeleteBookDialog({ book, onClose }: DeleteBookDialogProps) {
             toast.success("Book deleted successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to delete book"),
+        onError: (error) => {
+            const message =
+                isAxiosError(error)
+                    ? error.response?.data?.message
+                    : undefined;
+            toast.error(message ?? "Failed to delete book");
+        },
     });
 
     return (
