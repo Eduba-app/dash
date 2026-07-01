@@ -66,18 +66,16 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
   });
 
   const { mutate: updateBook, isPending } = useMutation({
-    mutationFn: (data: EditBookForm) => {
-      const tier = priceTiers.find((t) => t.id === data.priceTierId);
-      return booksService.update(book.id, {
+    mutationFn: (data: EditBookForm) =>
+      booksService.update(book.id, {
         title: data.title,
         description: data.description,
         categoryId: data.categoryId,
-        priceCents: tier?.priceCents ?? book.priceCents,
+        priceTierId: data.priceTierId,
         freeTrialCardCount: data.freeTrialCardCount,
         isActive: data.isActive,
         cover: selectedCover,
-      });
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
       toast.success("Book updated successfully");

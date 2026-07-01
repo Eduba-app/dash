@@ -59,7 +59,7 @@ export const booksService = {
       title?: string;
       description?: string;
       categoryId?: string;
-      priceCents?: number;
+      priceTierId?: string;
       freeTrialCardCount?: number;
       isActive?: boolean;
       cover?: File | null;
@@ -73,7 +73,7 @@ export const booksService = {
           ...(payload.title !== undefined && { title: payload.title }),
           ...(payload.description !== undefined && { description: payload.description }),
           ...(payload.categoryId !== undefined && { categoryId: payload.categoryId }),
-          ...(payload.priceCents !== undefined && { priceCents: payload.priceCents }),
+          ...(payload.priceTierId !== undefined && { priceTierId: payload.priceTierId }),
           ...(payload.freeTrialCardCount !== undefined && { freeTrialCardCount: payload.freeTrialCardCount }),
           isActive: payload.isActive,
         }, {
@@ -99,8 +99,8 @@ export const booksService = {
     if (payload.categoryId !== undefined) {
       formData.append("categoryId", payload.categoryId);
     }
-    if (payload.priceCents !== undefined) {
-      formData.append("priceCents", String(payload.priceCents));
+    if (payload.priceTierId !== undefined) {
+      formData.append("priceTierId", payload.priceTierId);
     }
     if (payload.freeTrialCardCount !== undefined) {
       formData.append("freeTrialCardCount", String(payload.freeTrialCardCount));
