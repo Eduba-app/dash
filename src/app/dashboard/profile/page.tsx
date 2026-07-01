@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { profileService } from "@/services/profile.services";
+import { systemSettingsService } from "@/services/system-settings.services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
@@ -20,6 +21,11 @@ export default function ProfilePage() {
     queryFn: profileService.getProfile,
   });
 
+  const { data: supportLinkData } = useQuery({
+    queryKey: ["system-settings", "support-link"],
+    queryFn: () => systemSettingsService.getSetting("support-link"),
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,53 +37,60 @@ export default function ProfilePage() {
 
   const startEditingProfile = () => {
     if (profile) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         name: profile.name || "",
         email: profile.email || "",
-        supportLink: profile.supportLink || "",
-      });
+      }));
     }
     setIsEditingProfile(true);
   };
 
   const startEditingSupport = () => {
-    if (profile) {
-      setFormData({
-        name: profile.name || "",
-        email: profile.email || "",
-        supportLink: profile.supportLink || "",
-      });
-    }
+    setFormData((prev) => ({
+      ...prev,
+      supportLink: supportLinkData?.value || "",
+    }));
     setIsEditingSupport(true);
   };
 
-  const updateMutation = useMutation({
+  const updateProfileMutation = useMutation({
     mutationFn: profileService.updateProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       setIsEditingProfile(false);
-      setIsEditingSupport(false);
       toast.success("Profile updated successfully");
     },
     onError: () => toast.error("Failed to update profile"),
   });
 
-  const handleSaveProfile = async () => {
+  const updateSupportMutation = useMutation({
+    mutationFn: (value: string) =>
+      systemSettingsService.updateSetting("support-link", value),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["system-settings", "support-link"] });
+      setIsEditingSupport(false);
+      toast.success("Support link updated successfully");
+    },
+    onError: () => toast.error("Failed to update support link"),
+  });
+
+  const handleSaveProfile = () => {
     const fd = new FormData();
     fd.append("name", formData.name);
     fd.append("email", formData.email);
-    updateMutation.mutate(fd);
+    updateProfileMutation.mutate(fd);
   };
 
-  const handleSaveSupport = async () => {
-    const fd = new FormData();
-    fd.append("supportLink", formData.supportLink || "");
-    updateMutation.mutate(fd);
+  const handleSaveSupport = () => {
+    updateSupportMutation.mutate(formData.supportLink);
   };
 
   if (isLoading || !profile) {
     return <div className="p-4 sm:p-6">Loading profile...</div>;
   }
+
+  const currentSupportLink = supportLinkData?.value || "";
 
   return (
     <div className="p-4 sm:p-6 max-w-259.5 mx-auto">
@@ -111,10 +124,10 @@ export default function ProfilePage() {
               </Button>
               <Button
                 onClick={handleSaveProfile}
-                disabled={updateMutation.isPending}
+                disabled={updateProfileMutation.isPending}
                 className="bg-[#9D4A2F] cursor-pointer hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
-                {updateMutation.isPending ? "Saving..." : "Save"}
+                {updateProfileMutation.isPending ? "Saving..." : "Save"}
               </Button>
             </div>
           )}
@@ -167,10 +180,10 @@ export default function ProfilePage() {
               </Button>
               <Button
                 onClick={handleSaveSupport}
-                disabled={updateMutation.isPending}
+                disabled={updateSupportMutation.isPending}
                 className="bg-[#9D4A2F] cursor-pointer hover:bg-[#e77751] text-white px-4 sm:px-6"
               >
-                {updateMutation.isPending ? "Saving..." : "Save"}
+                {updateSupportMutation.isPending ? "Saving..." : "Save"}
               </Button>
             </div>
           )}
@@ -182,7 +195,7 @@ export default function ProfilePage() {
           </label>
           <Input
             placeholder="https://..."
-            value={isEditingSupport ? formData.supportLink : profile.supportLink || ""}
+            value={isEditingSupport ? formData.supportLink : currentSupportLink}
             onChange={(e) => setFormData({ ...formData, supportLink: e.target.value })}
             disabled={!isEditingSupport}
             className="w-full h-12 px-4 rounded-xl border border-[#E5E7EB] bg-[#F9F9FB] text-[#1C1C2E] outline-none focus:border-[#A0522D] disabled:bg-[#F9F9FB]"
@@ -191,7 +204,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Logout Button */}
-      {isEditingSupport || isEditingProfile ? "" :
+      {!isEditingSupport && !isEditingProfile ? (
         <div className="flex justify-end">
           <Button
             onClick={logout}
@@ -203,7 +216,7 @@ export default function ProfilePage() {
             Logout
           </Button>
         </div>
-      }
+      ) : null}
     </div>
   );
 }

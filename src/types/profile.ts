@@ -5,5 +5,4 @@ export interface UserProfile {
   phone?: string;
   avatarUrl?: string | null;
   role?: string;
-  supportLink?: string;    
 }
