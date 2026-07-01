@@ -46,7 +46,7 @@ export interface CreateBookPayload {
   title: string;
   description: string;
   categoryId: string;
-  priceCents: number;
+  priceTierId: string;
   freeTrialCardCount?: number;
   cover: File;
   apkg: File;

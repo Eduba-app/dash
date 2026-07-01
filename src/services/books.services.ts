@@ -36,7 +36,7 @@ export const booksService = {
     formData.append("title",       payload.title);
     formData.append("description", payload.description);
     formData.append("categoryId",  payload.categoryId);
-    formData.append("priceCents",  String(payload.priceCents));
+    formData.append("priceTierId", payload.priceTierId);
     
     if (payload.freeTrialCardCount !== undefined) {
       formData.append("freeTrialCardCount", String(payload.freeTrialCardCount));

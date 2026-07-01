@@ -81,12 +81,11 @@ export function AddBookForm() {
       toast.error("Please upload an APKG file");
       return;
     }
-    const tier = priceTiers.find((t) => t.id === data.priceTierId);
     createBook({
       title: data.title,
       description: data.description,
       categoryId: data.categoryId,
-      priceCents: tier?.priceCents ?? 0,
+      priceTierId: data.priceTierId,
       freeTrialCardCount: data.freeTrialCardCount,
       cover: coverFile,
       apkg: apkgFile,
