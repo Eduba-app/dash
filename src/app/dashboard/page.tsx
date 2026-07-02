@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import balance from "../../../public/icons/Balance Icon.svg";
 import users from "../../../public/icons/Customer Icon.svg";
-import timer from "../../../public/icons/timer.svg";
+import bookIcon from "../../../public/icons/book.svg";
+import clipboardIcon from "../../../public/icons/clipboard.svg";
 import { booksService } from "@/services/books.services";
-import { usersService } from "@/services/users.services";
+import { dashboardService } from "@/services/dashboard.services";
 import { Book } from "@/types/book";
 
 // Book Row
@@ -71,13 +72,11 @@ export default function DashboardPage() {
     queryFn: () => booksService.getAll({ page: 1, limit: 7 }),
   });
 
-  const { data: usersResponse } = useQuery({
-    queryKey: ["users-count"],
-    queryFn: () => usersService.getAll({ page: 1, limit: 1 }),
+  const { data: stats } = useQuery({
+    queryKey: ["dashboard-stats"],
+    queryFn: dashboardService.getStats,
     staleTime: 5 * 60 * 1000,
   });
-
-  const totalUsers = usersResponse?.data?.meta?.total;
 
   const books: Book[] = booksResponse?.data?.data ?? [];
 
@@ -89,7 +88,7 @@ export default function DashboardPage() {
       <div className="bg-white rounded-2xl p-4 sm:p-6">
         <h2 className="text-[#19213D] text-base font-medium mb-4">Overview</h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 bg-[#F6F8FC] rounded-[32px] border-[1.5px] border-[#EBEFF6] p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 bg-[#F6F8FC] rounded-[32px] border-[1.5px] border-[#EBEFF6] p-2">
           {/* Users */}
           <div className="bg-white border-[1.5px] border-[#E5E7EB] rounded-[24px] py-4 px-8">
             <div className="flex items-center gap-2 text-[#5D6481] text-sm font-medium mb-3">
@@ -97,7 +96,7 @@ export default function DashboardPage() {
               <span>Users</span>
             </div>
             <p className="text-[#19213D] text-[40px] sm:text-[60px] font-semibold">
-              {totalUsers?.toLocaleString() ?? "—"}
+              {stats?.activeStudents?.toLocaleString() ?? "—"}
             </p>
           </div>
 
@@ -108,21 +107,33 @@ export default function DashboardPage() {
               <span>Revenue</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">265K</p>
-              <span className="text-[#5D6481] text-sm">last 30 days</span>
+              <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">
+                ${stats ? (stats.revenueThisMonthCents / 100).toLocaleString() : "—"}
+              </p>
+              <span className="text-[#5D6481] text-sm">this month</span>
             </div>
           </div>
 
-          {/* Study Time */}
+          {/* Catalog */}
           <div className="bg-transparent p-4">
             <div className="flex items-center gap-2 text-[#5D6481] text-sm font-medium mb-3">
-              <Image src={timer} width={24} height={24} alt="timer icon" />
-              <span>Study time in hours</span>
+              <Image src={bookIcon} width={24} height={24} alt="book icon" />
+              <span>Catalog</span>
             </div>
-            <div className="flex items-baseline gap-2">
-              <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">360</p>
-              <span className="text-[#5D6481] text-sm">last 30 days</span>
+            <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">
+              {stats?.activeBooks?.toLocaleString() ?? "—"}
+            </p>
+          </div>
+
+          {/* Subscriptions */}
+          <div className="bg-transparent p-4">
+            <div className="flex items-center gap-2 text-[#5D6481] text-sm font-medium mb-3">
+              <Image src={clipboardIcon} width={24} height={24} alt="clipboard icon" />
+              <span>Subscriptions</span>
             </div>
+            <p className="text-[#19213D] text-[40px] sm:text-[60px] font-medium">
+              {stats?.activeSubscriptions?.toLocaleString() ?? "—"}
+            </p>
           </div>
         </div>
       </div>

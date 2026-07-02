@@ -26,10 +26,16 @@ export const notificationsService = {
     await api.put("/notifications/read-all");
   },
 
+  // POST /notifications/broadcast (Admin only)
+  broadcast: async (payload: { title: string; body: string }): Promise<void> => {
+    await api.post("/notifications/broadcast", payload);
+  },
+
   // DELETE /notifications/cleanup (Admin only)
-  cleanup: async (days: number): Promise<void> => {
-    await api.delete("/notifications/cleanup", {
+  cleanup: async (days: number): Promise<{ deleted: number }> => {
+    const { data } = await api.delete("/notifications/cleanup", {
       params: { days },
     });
+    return data?.data ?? data;
   },
 };
