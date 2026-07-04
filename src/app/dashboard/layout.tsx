@@ -29,7 +29,7 @@ export default function DashboardLayout({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F7]">
+    <div className="min-h-screen bg-[#F4F4F7] lg:h-screen lg:overflow-hidden">
       {/* Mobile top bar */}
       <header className="lg:hidden flex items-center gap-3 bg-white px-4 py-3 shadow-sm sticky top-0 z-30">
         <button
@@ -48,9 +48,9 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <div className="flex gap-4 p-4">
+      <div className="flex gap-4 p-4 lg:h-full">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 min-w-0 lg:overflow-y-auto">{children}</main>
       </div>
     </div>
   );

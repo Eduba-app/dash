@@ -64,7 +64,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       <aside className={cn(
         "fixed inset-y-0 left-0 z-50 w-64 bg-white flex flex-col py-7 pb-3 px-2 shadow-sm transition-transform duration-300",
-        "lg:relative lg:inset-auto lg:z-auto lg:w-62.5 lg:min-h-[calc(100vh-2rem)] lg:rounded-[32px] lg:translate-x-0 lg:transition-none",
+        "lg:relative lg:inset-auto lg:z-auto lg:w-62.5 lg:h-full lg:rounded-[32px] lg:translate-x-0 lg:transition-none lg:overflow-hidden",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
 
@@ -79,7 +79,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </button>
 
         {/* Logo */}
-        <div className="flex items-center gap-2 px-2 mb-10">
+        <div className="flex items-center gap-2 px-2 mb-6 lg:mb-4">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
             <Image src={logo} width={62} height={62} alt="logo" />
           </div>
@@ -121,7 +121,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* User */}
-        <div className="mt-6">
+        <div className="mt-auto pt-3">
           <div
             className={cn(
               "flex items-center gap-3 bg-[#F6F8FC] rounded-4xl px-3 py-2 cursor-pointer hover:bg-[#EEF2F9] transition-colors",
