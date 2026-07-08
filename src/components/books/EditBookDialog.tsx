@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { getErrorMessage } from "@/lib/utils";
 import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 
 const editBookSchema = z.object({
@@ -81,7 +82,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
       toast.success("Book updated successfully");
       onClose();
     },
-    onError: () => toast.error("Failed to update book"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update book")),
   });
 
   return (

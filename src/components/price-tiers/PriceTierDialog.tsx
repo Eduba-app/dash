@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { priceTiersService } from "@/services/price-tiers.services";
 import { PriceTier } from "@/types/price-tier";
+import { getErrorMessage } from "@/lib/utils";
 import { DollarSign } from "lucide-react";
 
 const tierSchema = z.object({
@@ -20,9 +21,10 @@ type TierForm = z.infer<typeof tierSchema>;
 interface PriceTierDialogProps {
     tier?: PriceTier;
     onClose: () => void;
+    onCreated?: (tier: PriceTier) => void;
 }
 
-export function PriceTierDialog({ tier, onClose }: PriceTierDialogProps) {
+export function PriceTierDialog({ tier, onClose, onCreated }: PriceTierDialogProps) {
     const queryClient = useQueryClient();
     const isEdit = !!tier;
 
@@ -54,18 +56,21 @@ export function PriceTierDialog({ tier, onClose }: PriceTierDialogProps) {
             }
             return priceTiersService.create(payload);
         },
-        onSuccess: () => {
+        onSuccess: (newTier) => {
             queryClient.invalidateQueries({ queryKey: ["price-tiers"] });
             toast.success(
                 isEdit
                     ? "Price tier updated successfully"
                     : "Price tier created successfully"
             );
+            if (!isEdit && onCreated) {
+                onCreated(newTier);
+            }
             onClose();
         },
-        onError: () =>
+        onError: (error) =>
             toast.error(
-                isEdit ? "Failed to update price tier" : "Failed to create price tier"
+                getErrorMessage(error, isEdit ? "Failed to update price tier" : "Failed to create price tier")
             ),
     });
 
@@ -77,7 +82,7 @@ export function PriceTierDialog({ tier, onClose }: PriceTierDialogProps) {
                 </h2>
 
                 <form
-                    onSubmit={handleSubmit((d) => saveTier(d))}
+                    onSubmit={(e) => { e.stopPropagation(); handleSubmit((d) => saveTier(d))(e); }}
                     className="space-y-4"
                 >
                     {/* Display Name */}

@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { booksService } from "@/services/books.services";
@@ -69,7 +70,7 @@ export function AddBookForm() {
       toast.success(`Book created! Status: ${res.importStatus}`);
       router.push("/dashboard/books");
     },
-    onError: () => toast.error("Failed to create book. Please try again."),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to create book. Please try again.")),
   });
 
   const onSubmit = (data: BookForm) => {

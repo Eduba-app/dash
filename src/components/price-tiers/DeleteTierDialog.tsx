@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { priceTiersService } from "@/services/price-tiers.services";
 import { PriceTier } from "@/types/price-tier";
+import { getErrorMessage } from "@/lib/utils";
 
 interface DeleteTierDialogProps {
     tier: PriceTier;
@@ -21,7 +22,7 @@ export function DeleteTierDialog({ tier, onClose }: DeleteTierDialogProps) {
             toast.success("Price tier deleted successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to delete price tier"),
+        onError: (error) => toast.error(getErrorMessage(error, "Failed to delete price tier")),
     });
 
     const hasUsage = tier.bookCount > 0 || tier.bundleCount > 0;

@@ -52,8 +52,8 @@ export interface CreateBundlePayload {
     title: string;
     description?: string;
     categoryId: string;
-    priceTierId: string;                 // ⚠️ NOT priceCents directly
-    durationDays?: number;
+    priceTierId: string;
+    bookIds: string[];
     cover?: File;
 }
 
@@ -62,7 +62,6 @@ export interface UpdateBundlePayload {
     description?: string;
     categoryId?: string;
     priceTierId?: string;
-    durationDays?: number;
     isActive?: boolean;
     cover?: File | null;
 }

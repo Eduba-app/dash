@@ -1,25 +1,15 @@
 "use client";
 
-import { isAxiosError } from "axios";
-import { Send, Trash2 } from "lucide-react";
+import { Send } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { notificationsService } from "@/services/notifications.services";
-
-function getErrorMessage(error: unknown, fallback: string): string {
-  if (isAxiosError(error)) {
-    const msg = error.response?.data?.message;
-    if (typeof msg === "string") return msg;
-    if (Array.isArray(msg)) return msg.map((m: { property: string; constraints: Record<string, string> }) => Object.values(m.constraints).join(", ")).join(" | ");
-  }
-  return fallback;
-}
+import { getErrorMessage } from "@/lib/utils";
 
 export default function NotificationsPage() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [days, setDays] = useState("");
 
   const broadcastMutation = useMutation({
     mutationFn: () => notificationsService.broadcast({ title, body }),
@@ -32,21 +22,10 @@ export default function NotificationsPage() {
       toast.error(getErrorMessage(error, "Failed to send notification")),
   });
 
-  const cleanupMutation = useMutation({
-    mutationFn: () => notificationsService.cleanup(Number(days)),
-    onSuccess: (data) => {
-      toast.success(`Deleted ${data?.deleted ?? 0} old notification(s)`);
-      setDays("");
-    },
-    onError: (error) =>
-      toast.error(getErrorMessage(error, "Failed to delete old notifications")),
-  });
-
   const canSend = title.trim().length > 0 && body.trim().length > 0;
-  const canClean = Number(days) > 0;
 
   return (
-    <div className="p-4 sm:p-6 pb-0 space-y-5">
+    <div className="p-4 sm:p-4 pb-0 space-y-5">
       <h1 className="text-[#1C1C2E] text-2xl sm:text-[32px] font-bold">Notification</h1>
 
       {/* Broadcast Card */}
@@ -94,7 +73,7 @@ export default function NotificationsPage() {
         </div>
       </div>
 
-      {/* Cleanup Card */}
+      {/* Cleanup Card - hidden per request, logic kept below in case it's needed again
       <div className="bg-white rounded-2xl p-6">
         <h2 className="text-[#1C1C2E] font-bold text-base mb-2">
           Cleanup Old Notifications
@@ -128,6 +107,7 @@ export default function NotificationsPage() {
           </button>
         </div>
       </div>
+      */}
     </div>
   );
 }

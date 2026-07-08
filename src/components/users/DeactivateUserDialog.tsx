@@ -5,6 +5,7 @@ import { ShieldOff } from "lucide-react";
 import { toast } from "sonner";
 import { usersService } from "@/services/users.services";
 import { User } from "@/types/user";
+import { getErrorMessage } from "@/lib/utils";
 
 interface DeactivateUserDialogProps {
     user: User;
@@ -24,7 +25,7 @@ export function DeactivateUserDialog({
             toast.success("User deactivated successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to deactivate user"),
+        onError: (error) => toast.error(getErrorMessage(error, "Failed to deactivate user")),
     });
 
     return (

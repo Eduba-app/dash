@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ export function BundlesTable() {
                 limit: ITEMS_PER_PAGE,
                 q: search || undefined,
             }),
+        placeholderData: keepPreviousData,
     });
 
     const bundles: Bundle[] = response?.data?.data ?? [];

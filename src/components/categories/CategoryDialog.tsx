@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { categoriesService } from "@/services/categories.services";
 import { Category } from "@/types/category";
+import { getErrorMessage } from "@/lib/utils";
 import { ImageUpload } from "@/components/categories/ImageUpload";
 
 const toSlug = (str: string) =>
@@ -68,9 +69,9 @@ export function CategoryDialog({ category, onClose }: CategoryDialogProps) {
             );
             onClose();
         },
-        onError: () =>
+        onError: (error) =>
             toast.error(
-                isEdit ? "Failed to update category" : "Failed to create category"
+                getErrorMessage(error, isEdit ? "Failed to update category" : "Failed to create category")
             ),
     });
 

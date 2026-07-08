@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { profileService } from "@/services/profile.services";
 import { systemSettingsService } from "@/services/system-settings.services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getErrorMessage } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -61,7 +62,7 @@ export default function ProfilePage() {
       setIsEditingProfile(false);
       toast.success("Profile updated successfully");
     },
-    onError: () => toast.error("Failed to update profile"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update profile")),
   });
 
   const updateSupportMutation = useMutation({
@@ -72,7 +73,7 @@ export default function ProfilePage() {
       setIsEditingSupport(false);
       toast.success("Support link updated successfully");
     },
-    onError: () => toast.error("Failed to update support link"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update support link")),
   });
 
   const handleSaveProfile = () => {

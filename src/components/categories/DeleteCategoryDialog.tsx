@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { categoriesService } from "@/services/categories.services";
 import { Category } from "@/types/category";
+import { getErrorMessage } from "@/lib/utils";
 
 interface DeleteCategoryDialogProps {
     category: Category;
@@ -25,7 +26,7 @@ export function DeleteCategoryDialog({
             toast.success("Category deleted successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to delete category"),
+        onError: (error) => toast.error(getErrorMessage(error, "Failed to delete category")),
     });
 
     return (

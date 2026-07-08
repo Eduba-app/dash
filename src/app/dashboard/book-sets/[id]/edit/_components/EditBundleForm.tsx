@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Image from "next/image";
 import { ChevronDown, Loader2, X } from "lucide-react";
@@ -23,7 +23,6 @@ const bundleSchema = z.object({
     description: z.string().min(1, "Description is required"),
     categoryId: z.string().min(1, "Category is required"),
     priceTierId: z.string().min(1, "Price tier is required"),
-    durationDays: z.number().min(1, "Duration must be at least 1 day"),
     isActive: z.boolean().optional(),
 });
 
@@ -188,8 +187,8 @@ interface EditBundleFormProps {
 
 export function EditBundleForm({ bundleId }: EditBundleFormProps) {
     const router = useRouter();
+    const queryClient = useQueryClient();
     const [coverFile, setCoverFile] = useState<File | null>(null);
-    const [durationValue, setDurationValue] = useState(365);
 
     // Fetch bundle details
     const {
@@ -204,7 +203,7 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
     // Fetch categories
     const { data: categoriesData } = useQuery({
         queryKey: ["categories"],
-        queryFn: () => categoriesService.getAll(),
+        queryFn: () => categoriesService.getAll({ page: 1, limit: 100 }),
     });
     const categories = categoriesData?.data ?? [];
 
@@ -229,7 +228,6 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
             description: "",
             categoryId: "",
             priceTierId: "",
-            durationDays: 365,
             isActive: true,
         },
     });
@@ -242,10 +240,8 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
             description: bundle.description ?? "",
             categoryId: bundle.categoryId,
             priceTierId: bundle.priceTierId,
-            durationDays: bundle.durationDays ?? 365,
             isActive: bundle.isActive ?? true,
         });
-        setDurationValue(bundle.durationDays ?? 365);
     }, [bundle, reset]);
 
     // Update mutation
@@ -256,15 +252,20 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
                 description: data.description,
                 categoryId: data.categoryId,
                 priceTierId: data.priceTierId,
-                durationDays: data.durationDays,
                 isActive: data.isActive,
                 cover: coverFile,
             }),
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["bundles"] });
+            queryClient.invalidateQueries({ queryKey: ["bundle", bundleId] });
             toast.success("Book set updated successfully!");
             router.push("/dashboard/book-sets");
         },
-        onError: () => toast.error("Failed to update book set."),
+        onError: (err: unknown) => {
+            const msg = (err as { response?: { data?: { message?: string } } })
+                ?.response?.data?.message;
+            toast.error(msg ?? "Failed to update book set.");
+        },
     });
 
     // Extract current book IDs from bundleBooks array
@@ -448,28 +449,6 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
                             )}
                         </div>
 
-                        {/* Duration */}
-                        <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">
-                            <h2 className="text-[#19213D] font-semibold text-[20px] mb-4">
-                                Duration
-                            </h2>
-                            <label className="block text-sm text-[#19213D] font-semibold mb-1.5">
-                                Duration (days)
-                            </label>
-                            <input
-                                type="number"
-                                min={1}
-                                value={durationValue}
-                                onFocus={(e) => e.target.select()}
-                                onChange={(e) => {
-                                    const v = parseInt(e.target.value) || 365;
-                                    setDurationValue(v);
-                                    setValue("durationDays", v);
-                                }}
-                                className="w-full h-12 px-4 rounded-xl border border-[#E5E7EB] bg-white text-[#1C1C2E] text-sm outline-none focus:border-[#A0522D] focus:ring-2 focus:ring-[#A0522D]/10 transition-all"
-                            />
-                        </div>
-
                         {/* Active Toggle */}
                         <div className="bg-white rounded-[32px] p-5 border-[1.5px] border-[#EBEFF6]">
                             <div className="flex items-center justify-between">
@@ -483,6 +462,7 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input
                                                 type="checkbox"
+                                                aria-label="Active status"
                                                 checked={value ?? true}
                                                 onChange={(e) => onChange(e.target.checked)}
                                                 className="sr-only peer"

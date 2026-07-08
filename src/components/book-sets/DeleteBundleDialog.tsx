@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { bundlesService } from "@/services/bundles.services";
 import { Bundle } from "@/types/bundle";
+import { getErrorMessage } from "@/lib/utils";
 
 interface DeleteBundleDialogProps {
     bundle: Bundle;
@@ -24,7 +25,7 @@ export function DeleteBundleDialog({
             toast.success("Book set deleted successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to delete book set"),
+        onError: (error) => toast.error(getErrorMessage(error, "Failed to delete book set")),
     });
 
     return (

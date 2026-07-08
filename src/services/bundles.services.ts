@@ -38,9 +38,7 @@ export const bundlesService = {
     }
     formData.append("categoryId", payload.categoryId);
     formData.append("priceTierId", payload.priceTierId);
-    if (payload.durationDays !== undefined) {
-      formData.append("durationDays", String(payload.durationDays));
-    }
+    payload.bookIds.forEach((id) => formData.append("bookIds", id));
 
     // Cover image last
     if (payload.cover) {
@@ -72,9 +70,6 @@ export const bundlesService = {
     if (payload.priceTierId !== undefined) {
       formData.append("priceTierId", payload.priceTierId);
     }
-    if (payload.durationDays !== undefined) {
-      formData.append("durationDays", String(payload.durationDays));
-    }
     if (payload.isActive !== undefined) {
       formData.append("isActive", String(payload.isActive));
     }
@@ -84,7 +79,7 @@ export const bundlesService = {
       formData.append("cover", payload.cover);
     }
 
-    const { data } = await api.put(`/admin/bundles/${id}`, formData, {
+    const { data } = await api.patch(`/admin/bundles/${id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return data?.data ?? data;

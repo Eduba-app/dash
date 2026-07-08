@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils";
 import { booksService } from "@/services/books.services";
 import { bundlesService } from "@/services/bundles.services";
 import { Book } from "@/types/book";
@@ -39,8 +40,8 @@ export function BundleBooksSection({
             toast.success("Book added to set");
             setLoadingBookId(null);
         },
-        onError: () => {
-            toast.error("Failed to add book");
+        onError: (error) => {
+            toast.error(getErrorMessage(error, "Failed to add book"));
             setLoadingBookId(null);
         },
     });
@@ -59,8 +60,8 @@ export function BundleBooksSection({
             toast.success("Book removed from set");
             setLoadingBookId(null);
         },
-        onError: () => {
-            toast.error("Failed to remove book");
+        onError: (error) => {
+            toast.error(getErrorMessage(error, "Failed to remove book"));
             setLoadingBookId(null);
         },
     });

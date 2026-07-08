@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { usersService } from "@/services/users.services";
 import { User } from "@/types/user";
+import { getErrorMessage } from "@/lib/utils";
 
 interface DeleteUserDialogProps {
     user: User;
@@ -21,7 +22,7 @@ export function DeleteUserDialog({ user, onClose }: DeleteUserDialogProps) {
             toast.success("User deleted successfully");
             onClose();
         },
-        onError: () => toast.error("Failed to delete user"),
+        onError: (error) => toast.error(getErrorMessage(error, "Failed to delete user")),
     });
 
     return (

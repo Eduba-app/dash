@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, Plus } from "lucide-react";
 import { PriceTier } from "@/types/price-tier";
 import { PriceTierDialog } from "@/components/price-tiers/PriceTierDialog";
@@ -21,7 +21,9 @@ export function PriceTierDropdown({
 }: PriceTierDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
-    const queryClient = useQueryClient();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => { setMounted(true); }, []);
 
     const selected = priceTiers.find((t) => t.id === value);
 
@@ -32,7 +34,10 @@ export function PriceTierDropdown({
 
     const handleCreateClose = () => {
         setShowCreateDialog(false);
-        queryClient.invalidateQueries({ queryKey: ["price-tiers"] });
+    };
+
+    const handleCreated = (newTier: PriceTier) => {
+        onChange(newTier.id);
     };
 
     return (
@@ -90,8 +95,9 @@ export function PriceTierDropdown({
                 )}
             </div>
 
-            {showCreateDialog && (
-                <PriceTierDialog onClose={handleCreateClose} />
+            {showCreateDialog && mounted && createPortal(
+                <PriceTierDialog onClose={handleCreateClose} onCreated={handleCreated} />,
+                document.body
             )}
         </>
     );

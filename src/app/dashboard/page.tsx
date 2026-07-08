@@ -68,8 +68,9 @@ function BookSkeleton() {
 // Main Page
 export default function DashboardPage() {
   const { data: booksResponse, isLoading } = useQuery({
-    queryKey: ["books", 1, ""],
+    queryKey: ["books-dashboard"],
     queryFn: () => booksService.getAll({ page: 1, limit: 7 }),
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: stats } = useQuery({
