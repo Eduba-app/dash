@@ -205,7 +205,7 @@ export function EditBundleForm({ bundleId }: EditBundleFormProps) {
         queryKey: ["categories"],
         queryFn: () => categoriesService.getAll({ page: 1, limit: 100 }),
     });
-    const categories = categoriesData?.data ?? [];
+    const categories = (categoriesData?.data ?? []).filter((c) => c.isActive);
 
     // Fetch price tiers
     const { data: priceTiersData } = useQuery({

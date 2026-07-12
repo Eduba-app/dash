@@ -14,15 +14,15 @@ export async function POST(req: NextRequest) {
         "Content-Type":  "application/json",
         "x-device-uuid": "admin-panel",
       },
-      body: JSON.stringify({ email, password, deviceUuid: "admin-panel" }),
+      body: JSON.stringify({ email, password, deviceUuid: "admin-panel", loginType: "admin" }),
     });
 
     const data = await res.json();
 
     if (!res.ok || data?.status !== "success") {
       return NextResponse.json(
-        { message: "Invalid email or password" },
-        { status: 401 }
+        { message: data?.message ?? "Invalid email or password" },
+        { status: res.status }
       );
     }
 

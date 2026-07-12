@@ -40,7 +40,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
     queryKey: ["categories"],
     queryFn: () => categoriesService.getAll(),
   });
-  const categories = categoriesData?.data ?? [];
+  const categories = (categoriesData?.data ?? []).filter((c) => c.isActive);
 
   const { data: priceTiersData } = useQuery({
     queryKey: ["price-tiers"],
