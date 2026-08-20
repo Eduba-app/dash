@@ -9,20 +9,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { getErrorMessage } from "@/lib/utils";
 import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
+import { ReimportApkgDialog } from "./ReimportApkgDialog";
 
-const editBookSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  categoryId: z.string().min(1, "Category is required"),
-  priceTierId: z.string().min(1, "Price tier is required"),
-  freeTrialCardCount: z.number().min(0).optional(),
-  isActive: z.boolean().optional(),
-});
+const editBookSchema = z
+  .object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    categoryId: z.string().min(1, "Category is required"),
+    priceTierId: z.string().optional(),
+    isFree: z.boolean().optional(),
+    freeTrialCardCount: z.number().min(0).optional(),
+    isActive: z.boolean().optional(),
+  })
+  .refine((data) => data.isFree || !!data.priceTierId, {
+    message: "Price tier is required unless the book is free",
+    path: ["priceTierId"],
+  });
 type EditBookForm = z.infer<typeof editBookSchema>;
 
 interface EditBookDialogProps {
@@ -35,6 +42,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
   const [selectedCover, setSelectedCover] = useState<File | null>(null);
   const [freeCardsValue, setFreeCardsValue] = useState(book.freeTrialCardCount ?? 0);
   const [isOpen, setIsOpen] = useState(false);
+  const [showReimportApkg, setShowReimportApkg] = useState(false);
 
   const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
@@ -61,10 +69,13 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
       description: book.description,
       categoryId: book.category?.id || "",
       priceTierId: book.priceTierId ?? "",
+      isFree: book.isFree ?? false,
       freeTrialCardCount: book.freeTrialCardCount ?? 0,
       isActive: book.isActive ?? true,
     },
   });
+
+  const isFree = useWatch({ control, name: "isFree" });
 
   const { mutate: updateBook, isPending } = useMutation({
     mutationFn: (data: EditBookForm) =>
@@ -73,6 +84,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
         description: data.description,
         categoryId: data.categoryId,
         priceTierId: data.priceTierId,
+        isFree: data.isFree,
         freeTrialCardCount: data.freeTrialCardCount,
         isActive: data.isActive,
         cover: selectedCover,
@@ -86,6 +98,7 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
   });
 
   return (
+    <>
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-xl">
         <h2 className="text-[#19213D] text-[18px] font-semibold mb-5">
@@ -196,24 +209,52 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
 
             {/* Price Tier */}
             <div>
-              <label className="block text-sm font-medium text-[#1C1C2E] mb-1.5">
-                Price Tier
-              </label>
-              <Controller
-                control={control}
-                name="priceTierId"
-                render={({ field: { onChange, value } }) => (
-                  <PriceTierDropdown
-                    value={value}
-                    onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
-                    priceTiers={priceTiers}
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-medium text-[#1C1C2E]">
+                  Price Tier
+                </label>
+                <Controller
+                  control={control}
+                  name="isFree"
+                  render={({ field: { onChange, value } }) => (
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={!!value}
+                        onChange={(e) => {
+                          onChange(e.target.checked);
+                          if (e.target.checked) {
+                            setValue("priceTierId", "");
+                          }
+                        }}
+                        className="w-4.5 h-4.5 rounded-md border-[#D1D5DB] accent-[#A0522D] cursor-pointer focus:ring-2 focus:ring-[#A0522D]/20"
+                      />
+                      <span className="text-xs text-[#1C1C2E] font-medium">
+                        Free book
+                      </span>
+                    </label>
+                  )}
+                />
+              </div>
+              {!isFree && (
+                <>
+                  <Controller
+                    control={control}
+                    name="priceTierId"
+                    render={({ field: { onChange, value } }) => (
+                      <PriceTierDropdown
+                        value={value ?? ""}
+                        onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
+                        priceTiers={priceTiers}
+                      />
+                    )}
                   />
-                )}
-              />
-              {errors.priceTierId && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.priceTierId.message}
-                </p>
+                  {errors.priceTierId && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.priceTierId.message}
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -261,12 +302,18 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
             )}
           />
 
-          {/* Note about APKG */}
-          <div className="bg-[#FFF9F5] border border-[#FFE5D0] rounded-xl p-3">
+          {/* APKG content */}
+          <div className="bg-[#FFF9F5] border border-[#FFE5D0] rounded-xl p-3 flex items-center justify-between gap-3">
             <p className="text-[#A0522D] text-xs">
-              <strong>Note:</strong> APKG file cannot be changed after creation.
               Import status: <span className="font-semibold">{book.importStatus}</span>
             </p>
+            <button
+              type="button"
+              onClick={() => setShowReimportApkg(true)}
+              className="shrink-0 h-8 px-3 cursor-pointer text-xs font-medium rounded-lg bg-[#A0522D] text-white hover:bg-[#8B4513] transition-colors"
+            >
+              Reimport APKG
+            </button>
           </div>
 
           {/* Actions */}
@@ -289,5 +336,9 @@ export function EditBookDialog({ book, onClose }: EditBookDialogProps) {
         </form>
       </div>
     </div>
+    {showReimportApkg && (
+      <ReimportApkgDialog book={book} onClose={() => setShowReimportApkg(false)} />
+    )}
+    </>
   );
 }

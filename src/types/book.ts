@@ -4,9 +4,10 @@ export interface Book {
   id: string;
   title: string;
   description: string;
-  coverImageUrl: string | null;  // ← coverImageUrl مش coverUrl
+  coverImageUrl: string | null;  
   priceCents: number;
   priceTierId?: string;
+  isFree?: boolean;
   freeTrialCardCount?: number;
   isActive: boolean;
   importStatus: ImportStatus;
@@ -25,7 +26,7 @@ export interface BooksMeta {
   page: number;
   limit: number;
   total: number;
-  pagesCount: number;  // ← pagesCount مش totalPages
+  pagesCount: number;  
 }
 
 export interface BooksResponse {
@@ -46,10 +47,17 @@ export interface CreateBookPayload {
   title: string;
   description: string;
   categoryId: string;
-  priceTierId: string;
+  priceTierId?: string;
+  isFree?: boolean;
   freeTrialCardCount?: number;
   cover: File;
   apkg: File;
+}
+
+export interface ReimportApkgResponse {
+  bookId: string;
+  jobId: string | null;
+  importStatus: ImportStatus;
 }
 
 export interface GetBooksParams {

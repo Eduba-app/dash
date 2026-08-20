@@ -4,7 +4,7 @@ interface BookDetailsInputs {
     title: string;
     description: string;
     categoryId: string;
-    priceTierId: string;
+    priceTierId?: string;
     freeTrialCardCount?: number;
 }
 

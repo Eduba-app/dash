@@ -5,6 +5,7 @@ import {
   CreateBookPayload,
   CreateBookResponse,
   GetBooksParams,
+  ReimportApkgResponse,
 } from "@/types/book";
 
 export const booksService = {
@@ -36,8 +37,13 @@ export const booksService = {
     formData.append("title",       payload.title);
     formData.append("description", payload.description);
     formData.append("categoryId",  payload.categoryId);
-    formData.append("priceTierId", payload.priceTierId);
-    
+
+    if (payload.isFree) {
+      formData.append("isFree", "true");
+    } else if (payload.priceTierId) {
+      formData.append("priceTierId", payload.priceTierId);
+    }
+
     if (payload.freeTrialCardCount !== undefined) {
       formData.append("freeTrialCardCount", String(payload.freeTrialCardCount));
     }
@@ -60,69 +66,57 @@ export const booksService = {
       description?: string;
       categoryId?: string;
       priceTierId?: string;
+      isFree?: boolean;
       freeTrialCardCount?: number;
       isActive?: boolean;
       cover?: File | null;
     }
   ): Promise<Book> => {
-    // If only updating metadata without cover, try JSON first
-    if (!(payload.cover instanceof File) && payload.isActive !== undefined) {
-      // Try JSON request for boolean fields
-      try {
-        const { data } = await api.patch(`/admin/books/${id}`, {
-          ...(payload.title !== undefined && { title: payload.title }),
-          ...(payload.description !== undefined && { description: payload.description }),
-          ...(payload.categoryId !== undefined && { categoryId: payload.categoryId }),
-          ...(payload.priceTierId !== undefined && { priceTierId: payload.priceTierId }),
-          ...(payload.freeTrialCardCount !== undefined && { freeTrialCardCount: payload.freeTrialCardCount }),
-          isActive: payload.isActive,
-        }, {
-          headers: { "Content-Type": "application/json" },
-        });
-        return data?.data ?? data;
-      } catch (error) {
-        // If JSON fails, fall back to FormData
-        console.warn("JSON update failed, falling back to FormData", error);
-      }
+    const metadataBody = {
+      ...(payload.title !== undefined && { title: payload.title }),
+      ...(payload.description !== undefined && { description: payload.description }),
+      ...(payload.categoryId !== undefined && { categoryId: payload.categoryId }),
+      ...(payload.isFree !== undefined && { isFree: payload.isFree }),
+      ...(!payload.isFree && payload.priceTierId !== undefined && { priceTierId: payload.priceTierId }),
+      ...(payload.freeTrialCardCount !== undefined && { freeTrialCardCount: payload.freeTrialCardCount }),
+      ...(payload.isActive !== undefined && { isActive: payload.isActive }),
+    };
+
+    let book: Book | undefined;
+
+    if (Object.keys(metadataBody).length > 0) {
+      const { data } = await api.patch(`/admin/books/${id}`, metadataBody, {
+        headers: { "Content-Type": "application/json" },
+      });
+      book = data?.data ?? data;
     }
 
-    // Use FormData (required when uploading cover)
-    const formData = new FormData();
-
-    // Only append provided fields (text fields first)
-    if (payload.title !== undefined) {
-      formData.append("title", payload.title);
-    }
-    if (payload.description !== undefined) {
-      formData.append("description", payload.description);
-    }
-    if (payload.categoryId !== undefined) {
-      formData.append("categoryId", payload.categoryId);
-    }
-    if (payload.priceTierId !== undefined) {
-      formData.append("priceTierId", payload.priceTierId);
-    }
-    if (payload.freeTrialCardCount !== undefined) {
-      formData.append("freeTrialCardCount", String(payload.freeTrialCardCount));
-    }
-    if (payload.isActive !== undefined) {
-      // Try different formats
-      formData.append("isActive", payload.isActive ? "true" : "false");
-    }
-
-    // Optional new cover (File means replace)
     if (payload.cover instanceof File) {
+      const formData = new FormData();
       formData.append("cover", payload.cover);
+
+      const { data } = await api.patch(`/admin/books/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      book = data?.data ?? data;
     }
 
-    const { data } = await api.patch(`/admin/books/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data?.data ?? data;
+    return book ?? (await booksService.getById(id));
   },
 
   // DELETE /admin/books/:id
   delete: async (id: string): Promise<void> => {
     await api.delete(`/admin/books/${id}`);
+  },
+
+  // PUT /admin/books/:id/reimport-apkg
+  reimportApkg: async (id: string, apkg: File): Promise<ReimportApkgResponse> => {
+    const formData = new FormData();
+    formData.append("apkg", apkg);
+
+    const { data } = await api.put(`/admin/books/${id}/reimport-apkg`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data?.data ?? data;
   },
 };

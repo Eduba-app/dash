@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -21,13 +21,19 @@ import { FreeCardsInput } from "./FreeCardsInput";
 import { PriceTierDropdown } from "@/components/price-tiers/PriceTierDropdown";
 import upload from "../../../public/icons/folder-upload 1.svg";
 
-const bookSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  categoryId: z.string().min(1, "Category is required"),
-  priceTierId: z.string().min(1, "Price tier is required"),
-  freeTrialCardCount: z.number().min(0).optional(),
-});
+const bookSchema = z
+  .object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    categoryId: z.string().min(1, "Category is required"),
+    priceTierId: z.string().optional(),
+    isFree: z.boolean().optional(),
+    freeTrialCardCount: z.number().min(0).optional(),
+  })
+  .refine((data) => data.isFree || !!data.priceTierId, {
+    message: "Price tier is required unless the book is free",
+    path: ["priceTierId"],
+  });
 
 type BookForm = z.infer<typeof bookSchema>;
 
@@ -47,10 +53,13 @@ export function AddBookForm() {
     resolver: zodResolver(bookSchema),
     defaultValues: {
       priceTierId: "",
+      isFree: false,
       freeTrialCardCount: 0,
       categoryId: "",
     },
   });
+
+  const isFree = useWatch({ control, name: "isFree" });
 
   const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
@@ -147,24 +156,52 @@ export function AddBookForm() {
               <h2 className="text-[#19213D] font-semibold text-[20px] mb-4">
                 Price
               </h2>
-              <label className="block text-sm text-[#19213D] font-semibold mb-1.5">
-                Price Tier
-              </label>
+
               <Controller
                 control={control}
-                name="priceTierId"
+                name="isFree"
                 render={({ field: { onChange, value } }) => (
-                  <PriceTierDropdown
-                    value={value}
-                    onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
-                    priceTiers={priceTiers}
-                  />
+                  <label className="flex items-center gap-2 mb-4 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={!!value}
+                      onChange={(e) => {
+                        onChange(e.target.checked);
+                        if (e.target.checked) {
+                          setValue("priceTierId", "");
+                        }
+                      }}
+                      className="w-4.5 h-4.5 rounded-md border-[#D1D5DB] accent-[#A0522D] cursor-pointer focus:ring-2 focus:ring-[#A0522D]/20"
+                    />
+                    <span className="text-sm text-[#19213D] font-medium">
+                      Free book
+                    </span>
+                  </label>
                 )}
               />
-              {errors.priceTierId && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.priceTierId.message}
-                </p>
+
+              {!isFree && (
+                <>
+                  <label className="block text-sm text-[#19213D] font-semibold mb-1.5">
+                    Price Tier
+                  </label>
+                  <Controller
+                    control={control}
+                    name="priceTierId"
+                    render={({ field: { onChange, value } }) => (
+                      <PriceTierDropdown
+                        value={value ?? ""}
+                        onChange={(v) => { onChange(v); setValue("priceTierId", v); }}
+                        priceTiers={priceTiers}
+                      />
+                    )}
+                  />
+                  {errors.priceTierId && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.priceTierId.message}
+                    </p>
+                  )}
+                </>
               )}
             </div>
 
